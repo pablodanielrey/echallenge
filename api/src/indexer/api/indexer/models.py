@@ -9,7 +9,8 @@ from fastapi import Request
 
 from . import exceptions
 
-
+import logging
+logging.getLogger().setLevel(logging.WARN)
 class AlertsManager:
 
     def __init__(self, broker_url: str, topic: str):
@@ -37,11 +38,12 @@ class AlertsManager:
                     "retry": 2000,
                     "data": alert.value
                 }
+                logging.warn(event)
                 yield event
                 await consumer.commit()
 
-        except KafkaError as e:
-            raise exceptions.AlertsError from e
+        # except KafkaError as e:
+        #     raise exceptions.AlertsError from e
 
         finally:
             await consumer.stop()

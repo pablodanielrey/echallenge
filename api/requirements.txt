@@ -1,5 +1,6 @@
-fastapi
+fastapi[all]
 sse_starlette
+asyncio
 uvicorn[standard]
 pydantic
 email-validator

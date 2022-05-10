@@ -27,4 +27,3 @@ def get_vehicles_by_make(vm: VehiclesManager = Depends(deps.get_vehicles_manager
 @router.get('/alerts', dependencies=[Depends(get_jwt_token)])
 async def get_alerts_stream(request: Request, am: models.AlertsManager = Depends(deps.get_alerts_manager)):
     return EventSourceResponse(am.kafka_alerts(request))
-

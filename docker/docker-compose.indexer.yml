@@ -2,7 +2,7 @@ version: "3.7"
 name: api
 services:
 
-  indexer_db:
+  api_db:
     image: postgres:14
     environment:
       POSTGRES_DB: auth
@@ -15,13 +15,34 @@ services:
     networks:
       - backend
 
-  # indexer:
-  #   build: ../indexer
-  #   environment:
-  #     KAFKA_BROKER_URL: broker:9092
-  #     DETECTIONS_TOPIC: intellisite.detections
-  #     ALERTS_TOPIC: intellisite.alerts
-  #     SUSPICIOUS_VEHICLE: SUV
+  indexer_db:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: indexer
+      POSTGRES_USER: indexer
+      POSTGRES_PASSWORD: superrecontrasecreto
+    ports:
+      - 5433:5432
+    volumes:
+      - /tmp/data_indexer:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  indexer:
+    build: 
+      context: ..
+      dockerfile: indexer/Dockerfile
+    depends_on:
+      - indexer_db
+    environment:
+      VEHICLES_DB_CONNECTION: postgresql://indexer:superrecontrasecreto@indexer_db:5432/indexer
+      KAFKA_BROKER_URL: broker:9092
+      DETECTIONS_TOPIC: intellisite.detections
+      ALERTS_TOPIC: intellisite.alerts
+      SUSPICIOUS_VEHICLE: SUV
+    networks:
+      - backend
+      - intellisite
 
 networks:
   backend:
