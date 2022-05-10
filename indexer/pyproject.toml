@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 
 [tool.pytest.ini_options]
-addopts = "--cov=indexer"
+addopts = "--cov=indexer.indexer"
 testpaths = [
     "tests"
 ]

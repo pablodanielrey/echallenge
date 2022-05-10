@@ -6,9 +6,8 @@ from typing import Callable
 from kafka import KafkaConsumer, KafkaProducer
 from kafka.consumer.fetcher import ConsumerRecord
 from kafka.errors import NoBrokersAvailable
-from db.src.indexer.db.detections import VehiclesManager
 
-from indexer.db import DB, detections
+from indexer.vehicles import models
 
 from .exceptions import ProcessingException
 
@@ -56,7 +55,7 @@ class DetectAlert(StreamProcessor):
 
 class PersistToDB(StreamProcessor):
 
-    def __init__(self, vm: detections.VehiclesManager):
+    def __init__(self, vm: models.VehiclesManager):
         self.vm = vm
 
     def process_event(self, detection_event: ConsumerRecord) -> bool:
