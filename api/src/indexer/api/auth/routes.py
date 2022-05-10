@@ -10,6 +10,13 @@ router = APIRouter()
 
 @router.get("/admin")
 def generate_admin(um: models.UsersManager = Depends(deps.get_users_manager)):
+    """
+    # Endpoint que permite generar un admin para testear la auth.  
+    ### Genera por defecto el usuario **admin** con clave **admin**  
+    ### Returns:  
+      - id del usuario admin generado (si no existe)  
+      - "ya existe" en el caso de que ya se encuentra generado.  
+    """
     try:
         uid = um.add_user(name="admin", 
                           lastname="admin", 
@@ -18,14 +25,18 @@ def generate_admin(um: models.UsersManager = Depends(deps.get_users_manager)):
                           password="admin")
         return schemas.UserId(id=str(uid))
     except Exception:
-        return schemas.UserId(id="1")    
+        return schemas.UserId(id="ya existe")    
 
 
 @router.post('/users', dependencies=[Depends(get_jwt_token)])
 def create_users(user: schemas.UserWithCredentials, 
                  um: models.UsersManager = Depends(deps.get_users_manager)):
     """
-    ## Endpoint de creación de usuarios
+    # Endpoint de creación de usuarios  
+    ### Arguments:  
+      - user: usuario con credenciales a crear  
+    ### Returns:  
+      - id de usuario generado
     """
     try:
         user_data = user.flatten_dict()
@@ -41,7 +52,12 @@ def get_users(skip: Optional[int] = 0,
               limit: Optional[int] = 100,
               um: models.UsersManager = Depends(deps.get_users_manager)):
     """
-    ## Endpoint de lista de usuarios
+    # Endpoint de lista de usuarios  
+    ### Arguments:
+      - skip: indice inicial de la lista de usuarios
+      - limit: cantidad de usuarios a obtener  
+    ### Returns:
+      - lista de usuarios
     """
     users = um.get_users(skip, limit)
     return users

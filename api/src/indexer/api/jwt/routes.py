@@ -16,7 +16,12 @@ def oauth2_token(form_data: OAuth2PasswordRequestForm = Depends(),
                  jwt_manager: models.JWTManager = Depends(deps.get_jwt_manager), 
                  um: auth_models.UsersManager = Depends(auth_deps.get_users_manager)):
     """
-    ## Login para obtener un token jwt
+    # Endpoint que permite loguearse para obtener un token jwt  
+    ### Arguments:
+      - usuario: nombre de usuario a autentificar
+      - password: clave del usuario a verificar
+    ### Returns:
+      - token jwt
     """
     try:
         user = um.login(form_data.username, form_data.password)

@@ -1,6 +1,9 @@
 
 from pydantic import BaseModel, Field
 
+class Pagination(BaseModel):
+    skip: int
+    limit: int
 
 class Credentials(BaseModel):
     username: str
