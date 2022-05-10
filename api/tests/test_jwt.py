@@ -1,7 +1,7 @@
 import pytest
 import time
 
-from api.jwt import settings, exceptions, models
+from indexer.api.jwt import settings, exceptions, models
 
 
 @pytest.fixture(scope="session")

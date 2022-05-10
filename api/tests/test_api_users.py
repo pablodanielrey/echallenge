@@ -1,8 +1,8 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from api.app import app
-from api.jwt import settings, models
+from indexer.api.app import app
+from indexer.api.jwt import settings, models
 
 
 @pytest.fixture

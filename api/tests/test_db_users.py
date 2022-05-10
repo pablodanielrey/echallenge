@@ -1,7 +1,7 @@
 import uuid
 import pytest
 
-from api.auth import exceptions, entities, deps
+from indexer.api.auth import exceptions, entities, deps
 
 
 @pytest.fixture(scope="session")
