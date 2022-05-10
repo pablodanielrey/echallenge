@@ -1,0 +1,251 @@
+levanto la base con el compose y testeo a ver si tengo acceso
+
+
+pablo@xiaomi:/src/github/epic/echallenge$ docker exec -ti indexer_mongo-indexer_db-1 mongosh -u indexer -p superrecontrasecreto
+Current Mongosh Log ID:	627a9939d37fa3a75fa62599
+Connecting to:		mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.3.1
+Using MongoDB:		5.0.8
+Using Mongosh:		1.3.1
+
+For mongosh info see: https://docs.mongodb.com/mongodb-shell/
+
+------
+   The server generated these startup warnings when booting:
+   2022-05-10T16:53:22.235+00:00: /sys/kernel/mm/transparent_hugepage/enabled is 'always'. We suggest setting it to 'never'
+------
+
+Warning: Found ~/.mongorc.js, but not ~/.mongoshrc.js. ~/.mongorc.js will not be loaded.
+  You may want to copy or rename ~/.mongorc.js to ~/.mongoshrc.js.
+test> show dbs
+admin    102 kB
+config  12.3 kB
+local   73.7 kB
+test> 
+
+
+
+---
+
+
+corro un test básico que genera la base y verifico si existe la colection
+
+(env) pablo@xiaomi:/src/github/epic/echallenge/libs/vehicles_mongo$ pytest
+=============================================================================================== test session starts ===============================================================================================
+platform linux -- Python 3.9.2, pytest-7.1.2, pluggy-1.0.0
+rootdir: /src/github/epic/echallenge/libs/vehicles_mongo, configfile: pyproject.toml, testpaths: tests
+plugins: dotenv-0.5.2, cov-3.0.0
+collected 1 item                                                                                                                                                                                                  
+
+tests/test_detections.py .                                                                                                                                                                                  [100%]
+
+----------- coverage: platform linux, python 3.9.2-final-0 -----------
+Name                               Stmts   Miss  Cover
+------------------------------------------------------
+src/indexer/vehicles/__init__.py       0      0   100%
+src/indexer/vehicles/db.py            24      3    88%
+src/indexer/vehicles/entities.py       9      9     0%
+src/indexer/vehicles/models.py        22     22     0%
+------------------------------------------------------
+TOTAL                                 55     34    38%
+
+
+================================================================================================ 1 passed in 0.20s ================================================================================================
+(env) pablo@xiaomi:/src/github/epic/echallenge/libs/vehicles_mongo$ 
+
+
+
+test> show dbs
+admin      102 kB
+config    61.4 kB
+local     73.7 kB
+vehicles  12.3 kB
+test> use vehicles
+switched to db vehicles
+vehicles> show collections
+detections
+vehicles> 
+
+
+-----
+
+
+ejecuto un test que inserta directamente en la base
+y verifico
+
+vehicles> use vehicles
+already on db vehicles
+vehicles> db.detections.find()
+[
+  {
+    _id: ObjectId("627aa0ad41cbbbd1109293d9"),
+    id: UUID("a39a1ee8-da93-4c2c-9c98-c8b1c7eb3e09"),
+    timestamp: 1,
+    year: 2007,
+    make: 'Ford',
+    model: 'F150 SuperCrew Cab',
+    category: 'Pickup'
+  }
+]
+vehicles> 
+
+
+---
+
+
+corro de nuevo los tests y veo que efectivamente se insertan ok las detecciones.
+
+
+vehicles> db.detections.find({})
+[
+  {
+    _id: ObjectId("627aa24324446fe6bb3955ea"),
+    id: UUID("f7918a25-f75d-48de-a241-7bd4f13d78ad"),
+    timestamp: 1,
+    year: 2007,
+    make: 'Ford',
+    model: 'F150 SuperCrew',
+    category: 'Pickup'
+  },
+  {
+    _id: ObjectId("627aa281ad63c9277433d735"),
+    id: UUID("51114ed3-47b8-4964-ab9e-c4e28d8f5aa3"),
+    timestamp: 1,
+    year: 2007,
+    make: 'Ford',
+    model: 'F150 SuperCrew',
+    category: 'Pickup'
+  },
+  {
+    _id: ObjectId("627aa28a1100532c3d8952d2"),
+    id: UUID("966b5fba-b521-45f2-80e2-a7017080e503"),
+    timestamp: 1,
+    year: 2007,
+    make: 'Ford',
+    model: 'F150 SuperCrew',
+    category: 'Pickup'
+  }
+]
+vehicles> 
+
+
+----
+
+testeo el método de obtener las detecciones y funciona bien.
+
+---
+
+testeo el metodo para agregar la cuenta sobre las marcas de los vehiculos y funciona ok.
+
+---
+
+por la simplicidad de la solución y para los requerimientos del challenge voy a dejar la base en mongo.
+testeo a ver si puedo levantarlo y agregar la lib.
+
+--
+
+levanto el docker compose modificado y verifico a ver si funciona sin muchos cambios la librerias.
+
+pablo@xiaomi:/src/github/epic/echallenge$ docker exec -ti indexer_mongo-indexer-1 bash
+root@4ce1fa117377:/usr/app# ls vehicles_mongo/
+pyproject.toml	readme.txt  requirements.txt  requirements_dev.txt  setup.cfg  setup.py  src  tests
+root@4ce1fa117377:/usr/app# pip install -e vehicles_mongo/
+Obtaining file:///usr/app/vehicles_mongo
+  Installing build dependencies ... done
+  Checking if build backend supports build_editable ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Requirement already satisfied: pydantic in /usr/local/lib/python3.9/site-packages (from indexer-vehicles==0.0.1) (1.9.0)
+Requirement already satisfied: pymongo in /usr/local/lib/python3.9/site-packages (from indexer-vehicles==0.0.1) (4.1.1)
+Requirement already satisfied: typing-extensions>=3.7.4.3 in /usr/local/lib/python3.9/site-packages (from pydantic->indexer-vehicles==0.0.1) (4.2.0)
+Installing collected packages: indexer-vehicles
+  Attempting uninstall: indexer-vehicles
+    Found existing installation: indexer-vehicles 0.0.1
+    Uninstalling indexer-vehicles-0.0.1:
+      Successfully uninstalled indexer-vehicles-0.0.1
+  Running setup.py develop for indexer-vehicles
+Successfully installed indexer-vehicles-0.0.1
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+root@4ce1fa117377:/usr/app# 
+
+root@4ce1fa117377:/usr/app# pip install -e indexer/
+Obtaining file:///usr/app/indexer
+  Installing build dependencies ... done
+  Checking if build backend supports build_editable ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Requirement already satisfied: pydantic in /usr/local/lib/python3.9/site-packages (from indexer-indexer==0.0.1) (1.9.0)
+Requirement already satisfied: kafka-python==2.0.2 in /usr/local/lib/python3.9/site-packages (from indexer-indexer==0.0.1) (2.0.2)
+Requirement already satisfied: indexer.vehicles in ./vehicles_mongo/src (from indexer-indexer==0.0.1) (0.0.1)
+Requirement already satisfied: pymongo in /usr/local/lib/python3.9/site-packages (from indexer.vehicles->indexer-indexer==0.0.1) (4.1.1)
+Requirement already satisfied: typing-extensions>=3.7.4.3 in /usr/local/lib/python3.9/site-packages (from pydantic->indexer-indexer==0.0.1) (4.2.0)
+Installing collected packages: indexer-indexer
+  Attempting uninstall: indexer-indexer
+    Found existing installation: indexer-indexer 0.0.1
+    Uninstalling indexer-indexer-0.0.1:
+      Successfully uninstalled indexer-indexer-0.0.1
+  Running setup.py develop for indexer-indexer
+Successfully installed indexer-indexer
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+root@4ce1fa117377:/usr/app# 
+
+---
+
+la primer detección ya tiró error al almacenar en la base.
+asi que refactorizo el codigo de la lib para que se ajuste al indexer.
+
+root@4ce1fa117377:/usr/app# python3 -m indexer.indexer
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.9/runpy.py", line 197, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/local/lib/python3.9/runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+  File "/usr/app/indexer/src/indexer/indexer/__main__.py", line 4, in <module>
+    main.start()
+  File "/usr/app/indexer/src/indexer/indexer/main.py", line 29, in start
+    indexer.start()
+  File "/usr/app/indexer/src/indexer/indexer/models.py", line 17, in start
+    self.stream_listener.process_loop()
+  File "/usr/app/indexer/src/indexer/indexer/stream/listener.py", line 60, in process_loop
+    if not processor.process_event(detection):
+  File "/usr/app/indexer/src/indexer/indexer/stream/processors/persist_to_db.py", line 14, in process_event
+    self.vm.add_detection(timestamp=detection_event.timestamp, **detection_event.value)
+  File "/usr/app/vehicles_mongo/src/indexer/vehicles/models.py", line 21, in add_detection
+    detection = db.DB.from_dict(entities.Detection, kw)
+  File "/usr/app/vehicles_mongo/src/indexer/vehicles/db.py", line 45, in from_dict
+    return cls(**filtered_dict)
+  File "pydantic/main.py", line 331, in pydantic.main.BaseModel.__init__
+pydantic.error_wrappers.ValidationError: 1 validation error for Detection
+id
+  field required (type=value_error.missing)
+
+---
+
+es la autogeneración del id uuid. asi que lo agrego.
+en postgres lo hacia la base. aca lo hago a mano.
+
+---
+
+corri de nuevo el indexer y listo!! funciona.
+
+5820
+vehicles> db.detections.count()
+5821
+vehicles> db.detections.count()
+5822
+vehicles> db.detections.count()
+5823
+vehicles> db.detections.count()
+5826
+vehicles> 
+
+
+--
+
+ahora me falta probar la api si funciona con la nueva lib de base.
+levanto la api en el compose.
+
+--
+
+
+
+
