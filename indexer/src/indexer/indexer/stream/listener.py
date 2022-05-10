@@ -41,6 +41,7 @@ class StreamListener:
                         self.detections_topic,
                         group_id="indexer",
                         bootstrap_servers=self.broker_url,
+                        enable_auto_commit=False,
                         value_deserializer=self.deserializer
                     )
                 broker_online = True
@@ -66,3 +67,4 @@ class StreamListener:
                         """
                         logging.exception(e)
                         break
+                self.consumer.commit()
