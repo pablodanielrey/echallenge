@@ -1,16 +1,15 @@
-from sqlite3 import IntegrityError
 from typing import Any
 import uuid
 import pytest
-import pymongo
 
 from pydantic import BaseSettings
 
 from indexer.vehicles.entities import Detection
 from indexer.vehicles.exceptions import IntegrityError
 
-from indexer.mvehicles import db
-from indexer.mvehicles.models import VehiclesManager
+from indexer.pgvehicles import db
+from indexer.pgvehicles.models import VehiclesManager
+
 
 class Settings(BaseSettings):
     vehicles_db_connection: str

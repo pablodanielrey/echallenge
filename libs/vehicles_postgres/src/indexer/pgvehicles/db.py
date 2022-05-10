@@ -33,7 +33,7 @@ class DB:
             session.close()
 
     @staticmethod
-    def from_dict(cls: type[Base], data: dict[str, Any]):
+    def from_dict_to_entity(cls: type[Base], data: dict[str, Any]) -> Base:
         """
             Método utilitario para parsear dics a entidades de sqlalchemy.
             El case de las claves no es importante ya que se lleva todo a lower. (year == Year)

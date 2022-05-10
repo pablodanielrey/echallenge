@@ -1,3 +1,26 @@
+
+
+
+###########################
+###  Mongo journey!!!!
+############################
+----
+
+me quede pensando en impmenetar la base de detecciones en mongo.
+claramente es la mejor opción para este caso sin tener ningún contexto adicional, dado el formato de datos a almacenar
+y que las entidades son detecciones independientes siempre!!. (o sea siempre se AGREGA una nueva)
+
+
+----
+
+
+genero el código copiando la lib que armé de postgres para el sistema.
+y modifico lo necesario para adaptarlo a que la base sea mongo.
+
+
+----
+
+
 levanto la base con el compose y testeo a ver si tengo acceso
 
 
@@ -265,11 +288,51 @@ ValueError: [TypeError("'ObjectId' object is not iterable"), TypeError('vars() a
 ---
 
 refuerza mi pensamiento que del modelo con la vista debería comunicarse mediante modelos de pydantic.
-ya quedaría resuelto el problema.
+asi que lo voy a implementar en las libs. 
 
 ---
 
+listo implemente dentro de la lib de vehicles_mongo
+quedo funcionando la api sin problemas. y el indexer.
+
+--
+
+notas adicionales de la librería de vehicles_mongo.
+
+el contextmanager no es necesario en este caso. así que lo elimino.
+pero está bueno el patrón si es que se quiere utilizar transacciones en mongo.
+es el mismo patrón que usé con sqlalchemy y postgres.
+
+    @contextlib.contextmanager
+    def session(self):
+        try:
+            yield self.db
+        finally:
+            pass
 
 
 
+
+algunos aspectos a tener en cuenta de mongo que me quedan son:
+
+
+1 - mas responsabilidades a la gente que desarrolla.
+al generarse las colecciones automáticamente cuando uno inserta, se pueden generar sin índices si uno no es cuidadoso. 
+por lo que se podrína insertar documentos "asumiendo" que son únicos (si uno espera la exception como mecanismo de verificación de unicidad).
+al no existir el índice se inserta igual.
+
+2- muchísimo mas simple la conectividad con la base.
+
+
+
+
+
+##################
+##
+## ultimos touchs journey
+##
+###################
+
+comienzo a verificar que todo el código haya quedado coherente.
+que los aspectos de diseño sean coherentes en los 3 lados (indexer, api, libs)
 
