@@ -1,5 +1,5 @@
 version: "3.7"
-name: api
+name: indexer
 services:
 
   auth_db:
