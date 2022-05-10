@@ -25,14 +25,14 @@ def get_vehicles_by_make(vm: VehiclesManager = Depends(deps.get_vehicles_manager
     
 
 ######
-## hack!! para que openapi.json muestre el correcto mime-type.
-## quiero que en openapi.json se muestre el descriptor correcto en vez de "application/json"
-## EventSourceResponse tiene implementado como variable de instancia, por lo que no es accesible hasta que no 
-## se genera una instancia de la misma. (response_class no es de ayuda en este caso sin el hack)
-EventSourceResponse.media_type = "text/event-stream; charset=utf-8"
+## para que openapi.json muestre el correcto mime-type.
+## documentado en : https://fastapi.tiangolo.com/advanced/custom-response/
+from fastapi.responses import Response
+class SseResponse(Response):
+    media_type = "text/event-stream; charset=utf-8"
 
-@router.get('/alerts', dependencies=[Depends(get_jwt_token)])
+
+@router.get('/alerts', dependencies=[Depends(get_jwt_token)], response_class=SseResponse)
 async def get_alerts_stream(request: Request, 
-                            am: models.AlertsManager = Depends(deps.get_alerts_manager),
-                            response_class=EventSourceResponse):
+                            am: models.AlertsManager = Depends(deps.get_alerts_manager)):
     return EventSourceResponse(am.kafka_alerts(request))
