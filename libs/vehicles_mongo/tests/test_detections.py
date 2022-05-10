@@ -2,10 +2,12 @@ from typing import Any
 import uuid
 import pytest
 import pymongo
+from pymongo import errors
 from pydantic import BaseSettings
 
 from indexer.vehicles.db import DB
 from indexer.vehicles.models import VehiclesManager
+from indexer.vehicles.entities import Detection
 
 
 class Settings(BaseSettings):
@@ -96,6 +98,8 @@ def _lowerize(d: dict[str, Any]):
 
 
 def test_insert_detection(vehicles_manager: VehiclesManager):
+    vehicles_manager.db.drop_db()
+    vehicles_manager.db.generate_db()
     data = {'Year': 2007, 'Make': 'Ford', 'Model': 'F150 SuperCrew', 'Category': 'Pickup'}
     data.update({"id": uuid.uuid4(), "timestamp": 1})
     vid = vehicles_manager.add_detection(**_lowerize(data))
@@ -104,6 +108,7 @@ def test_insert_detection(vehicles_manager: VehiclesManager):
 
 def test_get_detections(vehicles_manager: VehiclesManager, vehicles: list[dict[str, Any]]):
     vehicles_manager.db.drop_db()
+    vehicles_manager.db.generate_db()
     for v in vehicles:
         v.update({"id": uuid.uuid4(), "timestamp": 1})
         vehicles_manager.add_detection(**_lowerize(v))
@@ -121,6 +126,7 @@ def test_skip_detections(vehicles_manager: VehiclesManager, vehicles: list[dict[
     Verifica que el skip funciona (por defecto el indice es el id)
     """
     vehicles_manager.db.drop_db()
+    vehicles_manager.db.generate_db()
     to_insert = [_lowerize(v) for v in vehicles]
     for v in to_insert:
         v.update({"id": uuid.uuid4(), "timestamp": 1})
@@ -140,12 +146,12 @@ def test_vehicles_by_make(vehicles_manager: VehiclesManager, vehicles: list[dict
     """
         verifica que esté agregando correctamnete los vehículos.
     """
-
     makes = {m: 0 for m in (v["Make"] for v in vehicles)}
     for v in vehicles:
         makes[v["Make"]] += 1
 
     vehicles_manager.db.drop_db()
+    vehicles_manager.db.generate_db()
     to_insert = [_lowerize(v) for v in vehicles]
     for v in to_insert:
         v.update({"id": uuid.uuid4(), "timestamp": 1})
@@ -157,3 +163,17 @@ def test_vehicles_by_make(vehicles_manager: VehiclesManager, vehicles: list[dict
     for m in result:
         key = m["make"]
         assert makes[key] == m["count"]
+
+
+def test_add_dup_detection(vehicles_manager: VehiclesManager):
+    vehicles_manager.db.drop_db()
+    vehicles_manager.db.generate_db()
+
+    data = {'Year': 2007, 'Make': 'Ford', 'Model': 'F150 SuperCrew', 'Category': 'Pickup'}
+    data.update({"id": uuid.uuid4(), "timestamp": 1})
+
+    detection = Detection(**_lowerize(data))
+    vehicles_manager.add_detection(**detection.dict())
+
+    with pytest.raises(errors.DuplicateKeyError):
+        vehicles_manager.add_detection(**detection.dict())

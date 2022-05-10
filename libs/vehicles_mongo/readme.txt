@@ -246,6 +246,30 @@ levanto la api en el compose.
 
 --
 
+vamooooooooooo.
+funciono todo sin ningun cambio de nada en la api.
+solo tira una exception debido a que ahora estoy retornando objetos que tienen ObjectId lo que no se puede
+serializar para la vista. PERO sin ningun cambio de nada arranó la vista, y consulto correctamente a la base.
+es solo una cuestión de serialización hacia el cliente.
+
+
+
+
+  File "/usr/local/lib/python3.9/site-packages/fastapi/encoders.py", line 101, in jsonable_encoder
+    encoded_value = jsonable_encoder(
+  File "/usr/local/lib/python3.9/site-packages/fastapi/encoders.py", line 144, in jsonable_encoder
+    raise ValueError(errors)
+ValueError: [TypeError("'ObjectId' object is not iterable"), TypeError('vars() argument must have __dict__ attribute')]
+
+
+---
+
+refuerza mi pensamiento que del modelo con la vista debería comunicarse mediante modelos de pydantic.
+ya quedaría resuelto el problema.
+
+---
+
+
 
 
 
