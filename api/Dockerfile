@@ -13,6 +13,6 @@ ADD libs/vehicles ./vehicles
 RUN pip install ./vehicles
 
 ADD api ./api
-RUN pip install -e ./api
+RUN pip install ./api
 
-# CMD ["python3", "-m", "indexer.api"]
+CMD ["python3", "-m", "indexer.api"]
