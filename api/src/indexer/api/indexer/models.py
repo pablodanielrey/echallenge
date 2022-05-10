@@ -9,8 +9,6 @@ from fastapi import Request
 
 from . import exceptions
 
-import logging
-logging.getLogger().setLevel(logging.WARN)
 class AlertsManager:
 
     def __init__(self, broker_url: str, topic: str):
@@ -18,6 +16,7 @@ class AlertsManager:
         self.topic = topic
 
     async def kafka_alerts(self, request: Request):
+        import json
         loop = asyncio.get_event_loop()
         consumer = aiokafka.AIOKafkaConsumer(self.topic,
                                              loop=loop,
@@ -25,25 +24,21 @@ class AlertsManager:
                                              group_id="indexer",
                                              bootstrap_servers=self.broker_url,
                                              enable_auto_commit=False,
-                                             auto_offset_reset="earliest")
+                                             auto_offset_reset="earliest",
+                                             value_deserializer=json.loads)
         await consumer.start()
         try:
             async for alert in consumer:
 
                 if await request.is_disconnected():
                     break
+
                 event = {
                     "event": "alert",
-                    "id": alert.key,
-                    "retry": 2000,
                     "data": alert.value
                 }
-                logging.warn(event)
                 yield event
                 await consumer.commit()
-
-        # except KafkaError as e:
-        #     raise exceptions.AlertsError from e
 
         finally:
             await consumer.stop()

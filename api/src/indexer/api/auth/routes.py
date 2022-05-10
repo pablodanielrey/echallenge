@@ -45,4 +45,3 @@ def get_users(skip: Optional[int] = 0,
     """
     users = um.get_users(skip, limit)
     return users
-

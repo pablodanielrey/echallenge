@@ -2,7 +2,7 @@ version: "3.7"
 name: api
 services:
 
-  auth_db:
+  api_db:
     image: postgres:14
     environment:
       POSTGRES_DB: auth
@@ -37,8 +37,6 @@ services:
     depends_on:
       - auth_db
       - indexer_db
-    ports:
-      - 8000:8000
     environment:
       AUTH_DB_CONNECTION: postgresql://auth:superrecontrasecreto@auth_db:5432/auth
       VEHICLES_DB_CONNECTION: postgresql://indexer:superrecontrasecreto@indexer_db:5432/indexer
@@ -52,10 +50,10 @@ services:
     networks:
       - backend
       - intellisite
-    # command: uvicorn indexer.api.app:app --reload --workers 2 --host 0.0.0.0 --port 8000
-    command: python3 -m http.server 1026
-    volumes:
-      - ../api:/usr/app/api
+    command: uvicorn indexer.api.app:app --reload --workers 1 --host 0.0.0.0 --port 8000
+
+    # volumes:
+    #   - ./api:/usr/app/api
 
 
   indexer:

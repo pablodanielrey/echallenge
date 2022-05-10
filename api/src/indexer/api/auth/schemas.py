@@ -6,7 +6,6 @@ class Credentials(BaseModel):
     username: str
     password: str
 
-
 class User(BaseModel):
     name: str
     lastname: str

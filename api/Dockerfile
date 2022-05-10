@@ -9,7 +9,10 @@ ENV PYTHONUNBUFFERED 1
 
 # ADD ./requirements.txt ./
 # RUN pip install -r requirements.txt
-ADD src/ ./
-RUN pip install .
+ADD libs/vehicles ./vehicles
+RUN pip install ./vehicles
 
-CMD ["python3", "-m", "api:app"]
+ADD api ./api
+RUN pip install -e ./api
+
+# CMD ["python3", "-m", "indexer.api"]

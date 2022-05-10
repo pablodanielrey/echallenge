@@ -24,6 +24,15 @@ def get_vehicles_by_make(vm: VehiclesManager = Depends(deps.get_vehicles_manager
     return schemas.MultipleResultApiResponse(data=vehicles, size=len(vehicles))
     
 
+######
+## hack!! para que openapi.json muestre el correcto mime-type.
+## quiero que en openapi.json se muestre el descriptor correcto en vez de "application/json"
+## EventSourceResponse tiene implementado como variable de instancia, por lo que no es accesible hasta que no 
+## se genera una instancia de la misma. (response_class no es de ayuda en este caso sin el hack)
+EventSourceResponse.media_type = "text/event-stream; charset=utf-8"
+
 @router.get('/alerts', dependencies=[Depends(get_jwt_token)])
-async def get_alerts_stream(request: Request, am: models.AlertsManager = Depends(deps.get_alerts_manager)):
+async def get_alerts_stream(request: Request, 
+                            am: models.AlertsManager = Depends(deps.get_alerts_manager),
+                            response_class=EventSourceResponse):
     return EventSourceResponse(am.kafka_alerts(request))
