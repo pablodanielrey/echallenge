@@ -5,7 +5,9 @@ from indexer.vehicles import db as v_db, models
 
 from .settings import Settings
 
-from .models import DetectAlert, Indexer, PersistToDB, PublishAlert, StreamListener
+from .models import Indexer
+from .stream.processors import DetectAlert, PersistToDB, PublishAlert
+from .stream.listener import StreamListener
 
 
 def start():
