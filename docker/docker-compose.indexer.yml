@@ -53,9 +53,10 @@ services:
       - backend
       - intellisite
     # command: uvicorn indexer.api.app:app --reload --workers 2 --host 0.0.0.0 --port 8000
-    command: python3 -m http.server 1026
-    volumes:
-      - ../api:/usr/app/api
+    # command: python3 -m http.server 1026
+    command: python3 -m indexer.api
+    # volumes:
+    #   - ../api:/usr/app/api
 
 
   indexer:
