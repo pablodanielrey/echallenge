@@ -2,7 +2,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from api.jwt.deps import get_jwt_token
+from ..jwt.deps import get_jwt_token
 from . import deps, models, exceptions, schemas
 
 

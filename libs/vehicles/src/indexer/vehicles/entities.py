@@ -3,7 +3,7 @@ import uuid
 from sqlalchemy import Column, Integer, String, BigInteger
 from sqlalchemy.dialects.postgresql import UUID
 
-from api.db import Base
+from .db import Base
 
 
 class Detection(Base):

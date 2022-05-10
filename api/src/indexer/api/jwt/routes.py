@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
-from api.auth import schemas as auth_schemas
-from api.auth import deps as auth_deps
-from api.auth import models as auth_models
-from api.auth import exceptions as auth_exceptions
+from ..auth import schemas as auth_schemas
+from ..auth import deps as auth_deps
+from ..auth import models as auth_models
+from ..auth import exceptions as auth_exceptions
 from . import schemas, models, deps, exceptions
 
 

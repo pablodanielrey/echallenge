@@ -1,6 +1,6 @@
 from fastapi import Depends
 
-from api.db import DB
+from ..db import DB
 from . import models, settings
 
 
