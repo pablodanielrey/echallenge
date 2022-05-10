@@ -67,6 +67,7 @@ services:
     command: python3 -m http.server 1026
     # command: python3 -m indexer.api
     volumes:
+      - ../libs/vehicles_mongo:/usr/app/vehicles_mongo    
       - ../api:/usr/app/api
 
 

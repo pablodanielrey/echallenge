@@ -10,6 +10,7 @@ from indexer.vehicles.models import VehiclesManager
 from indexer.vehicles.entities import Detection
 
 
+
 class Settings(BaseSettings):
     vehicles_db_connection: str
 
@@ -115,10 +116,13 @@ def test_get_detections(vehicles_manager: VehiclesManager, vehicles: list[dict[s
 
     dects = vehicles_manager.detections()
     assert len(dects) == len(vehicles)
+    for d in dects:
+        assert type(d) == Detection
+
 
     sortedv = sorted(vehicles, key=lambda x: x["id"])
     for v1, v2 in zip(sortedv, dects):
-        assert v1["id"] == v2["id"]
+        assert v1["id"] == v2.id
 
 
 def test_skip_detections(vehicles_manager: VehiclesManager, vehicles: list[dict[str, Any]]):
@@ -139,7 +143,7 @@ def test_skip_detections(vehicles_manager: VehiclesManager, vehicles: list[dict[
     assert len(dects) == len(vslice)
 
     for v1, v2 in zip(dects, vslice):
-        assert v1["id"] == v2["id"]
+        assert v1.id == v2["id"]
 
 
 def test_vehicles_by_make(vehicles_manager: VehiclesManager, vehicles: list[dict[str, Any]]):
@@ -161,8 +165,8 @@ def test_vehicles_by_make(vehicles_manager: VehiclesManager, vehicles: list[dict
     print(result)
 
     for m in result:
-        key = m["make"]
-        assert makes[key] == m["count"]
+        key = m.make
+        assert makes[key] == m.count
 
 
 def test_add_dup_detection(vehicles_manager: VehiclesManager):
@@ -177,3 +181,4 @@ def test_add_dup_detection(vehicles_manager: VehiclesManager):
 
     with pytest.raises(errors.DuplicateKeyError):
         vehicles_manager.add_detection(**detection.dict())
+

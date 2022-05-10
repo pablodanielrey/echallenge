@@ -13,7 +13,7 @@ class Detection(BaseModel):
     category: str
 
 
-class MakeCount(BaseModel):
+class CountByMake(BaseModel):
 
     make: str
     count: int

@@ -16,7 +16,8 @@ class VehiclesManager:
             f = f.skip(skip)
         if limit:
             f = f.limit(limit)
-        return [v for v in f]
+        
+        return [self.db.from_dict(entities.Detection, v) for v in f]
 
     def add_detection(self, **kw):
         detection = db.DB.from_dict(entities.Detection, kw)
@@ -29,5 +30,5 @@ class VehiclesManager:
             {"$sort": SON([("_id", -1)])},
             {"$project": {"_id": 0, "make": "$_id", "count": "$count"}}
         ]
-        data = list(self.db.detections.aggregate(pipeline))
+        data = [self.db.from_dict(entities.CountByMake, m) for m in self.db.detections.aggregate(pipeline)]
         return data

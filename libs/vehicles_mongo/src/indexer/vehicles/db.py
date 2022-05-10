@@ -37,7 +37,7 @@ class DB:
             pass
 
     @staticmethod
-    def from_dict(cls: type[BaseModel], data: dict[str, Any]):
+    def from_dict(cls: type[BaseModel], data: dict[str, Any]) -> BaseModel:
         """
             Método utilitario para parsear dics a entidades de sqlalchemy.
             El case de las claves no es importante ya que se lleva todo a lower. (year == Year)
@@ -46,5 +46,4 @@ class DB:
         if "id" not in filtered_dict:
             filtered_dict["id"] = uuid.uuid4()
         return cls(**filtered_dict)
-
 
