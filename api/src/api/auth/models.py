@@ -5,7 +5,7 @@ import uuid
 from sqlalchemy import select, exc
 from sqlalchemy.orm import selectinload
 
-from . import DB
+from api.db import DB
 from .entities import User, Auth
 from .exceptions import IntegrityError, IncorrectCredentials, UserNotFound
 

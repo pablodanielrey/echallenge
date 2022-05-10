@@ -1,0 +1,4 @@
+
+
+class AlertsError(Exception):
+    pass
