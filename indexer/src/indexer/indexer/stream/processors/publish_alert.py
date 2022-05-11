@@ -19,7 +19,7 @@ def serializer(data: object) -> bytes:
 
 class PublishAlert(StreamProcessor):
     """
-        Publica el evento en un topic del broker
+        Publica el evento de alerta en un topic del broker
     """
     def __init__(self,
                  broker_url: str,
@@ -43,7 +43,7 @@ class PublishAlert(StreamProcessor):
                     )
                 broker_online = True
             except NoBrokersAvailable:
-                # podría exportar a prometheus
+                # podría exportar a prometheus métricas
                 logging.warn("No se encuentra el broker")
 
     def process_event(self, detection: Record):

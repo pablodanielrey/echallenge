@@ -6,7 +6,7 @@ from typing import Optional, Callable
 from kafka import KafkaConsumer, KafkaProducer
 from kafka.errors import NoBrokersAvailable
 
-from ..exceptions import ProcessingException
+from .processors.exceptions import ProcessingException
 
 from .processor import StreamProcessor
 
@@ -53,18 +53,25 @@ class StreamListener:
         self.stream_processors.extend(processors)
 
     def process_loop(self):
+        """
+        Procesa los eventos que llegan por el stream. 
+        Cada procesador retorna True|False.
+        True = continuar con los siguientes procesadores en la cadena.
+        False = terminar de procesar el evento y pasar al siguiente.
+        ProcessingException = se deja de procesar el evento y continua con los siguientes. (decisión de diseño)
+
+        Notas: 
+        se puede hacer tan robusto como se necesite el manejo de errores del procesamiento. ahora solo lo ignora
+        y sigue con los siguientes.
+        """
         if self.consumer:
             for detection in self.consumer:
                 for processor in self.stream_processors:
+                    logging.debug(f"Procesando evento con: {processor}")
                     try:
                         if not processor.process_event(detection):
-                            """ si el procesador retorna False entonces no se continua con los demas """
                             break
                     except ProcessingException as e:
-                        """ 
-                            loggeo la exception y dejo de procesar este evento
-                            si existe un error en un procesamiento del stream no se continua con los siguientes
-                        """
                         logging.exception(e)
                         break
                 self.consumer.commit()

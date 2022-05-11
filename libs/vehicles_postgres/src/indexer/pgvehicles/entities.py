@@ -1,4 +1,5 @@
 import uuid
+from xml.etree.ElementTree import TreeBuilder
 
 from sqlalchemy import Column, Integer, String, BigInteger
 from sqlalchemy.dialects.postgresql import UUID
@@ -12,6 +13,6 @@ class Detection(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     timestamp = Column(BigInteger)
     year = Column(Integer)
-    make = Column(String)
+    make = Column(String, index=True)
     model = Column(String)
     category = Column(String)
