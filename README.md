@@ -209,9 +209,24 @@ docker compose -f docker/docker-compose.producer.yml up
 
 - Now it's time to bring the microservice up.
 
+
+With mongo detections backend.
+
 ```bash
-docker compose -f docker/docker-compose.indexer.yml up
+docker compose -f docker/docker-compose.indexer-mongo.yml up
 ```
+
+With postgresql detections backend
+
+```bash
+docker compose -f docker/docker-compose.indexer-postgres.yml up
+```
+
+  the code is the same, indexer and the api will detect what backend you whant based on
+  the database url configuration.
+  the compose files only differ in that they sets this environment variable and define the right backend database service.
+
+
 
 - now pray, pray, pray to the new, and the old gods.
 if you pray enough the system will be up and running.
