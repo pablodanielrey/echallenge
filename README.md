@@ -222,9 +222,10 @@ With postgresql detections backend
 docker compose -f docker/docker-compose.indexer-postgres.yml up
 ```
 
-  the code is the same, indexer and the api will detect what backend you whant based on
+  the code is the same, indexer and the api will detect what backend you whant based on  
   the database url configuration.
-  the compose files only differ in that they sets this environment variable and define the right backend database service.
+  the compose files only differ in that they sets this environment variable and define  
+  the right backend database service.
 
 
 
@@ -241,10 +242,10 @@ if you pray enough the system will be up and running.
 
 ## Notes!!!
 
-At the time (http://localhost:8000/alerts) does not show the stream in swagger ui.
-i couldn't make it work even setting the media type response correct.
-but the endpoint is working because you view the alerts stream with another tool.
-it seems that swagger ui is waiting for the connection to end to show you the data.
+At the time (http://localhost:8000/alerts) does not show the stream in swagger ui.  
+I couldn't make it work even setting the media type response correct.  
+But the endpoint is working because you cant view the alerts stream with another tool.  
+It seems that swagger ui is waiting for the connection to end to show you the data.
 
 workaround:
 
