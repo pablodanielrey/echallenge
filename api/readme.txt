@@ -192,3 +192,9 @@ running egg_
 
 ---
 
+
+cuando genero las imagenes con el docker compose, me trae una versión antigua de la libreria de db.
+y eso provoca que tire errores al ejecutarse.
+voy a probar incrementando las versiones a ver que pasa.
+
+--
