@@ -61,7 +61,7 @@ services:
       - 8000:8000
     environment:
       AUTH_DB_CONNECTION: postgresql://auth:superrecontrasecreto@auth_db:5432/auth
-      VEHICLES_DB_CONNECTION: postgresql://indexer:superrecontrasecreto@indexer_pg_db:5432/indexer
+      VEHICLES_DB_CONNECTION: mongodb://indexer:superrecontrasecreto@indexer_mongo_db:27017/
       KAFKA_BROKER_URL: broker:9092
       ALERTS_TOPIC: intellisite.alerts
       JWT_KEY: 0ca4e5595f14f2261ef41004fa8b0c4a386a22ea11c1fc9dff20072fb87ea595
