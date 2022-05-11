@@ -524,3 +524,36 @@ ahora pruebo el de mongo.
 ---
 
 
+listo probado con mogno y anda perfecto.
+
+ndexer_mongo-indexer_mongo-1     | WARNING:root:Publicando una alerta timestamp: 1652264553217 vehiculo: {'Year': 2013, 'Make': 'Dodge', 'Model': 'Durango', 'Category': 'SUV'}
+indexer_mongo-indexer_mongo-1     | WARNING:root:Publicando una alerta timestamp: 1652264555891 vehiculo: {'Year': 2016, 'Make': 'Honda', 'Model': 'CR-V', 'Category': 'SUV'}
+indexer_mongo-indexer_mongo-1     | WARNING:root:Publicando una alerta timestamp: 1652264558232 vehiculo: {'Year': 2016, 'Make': 'INFINITI', 'Model': 'QX50', 'Category': 'SUV'}
+indexer_mongo-indexer_mongo-1     | WARNING:root:Publicando una alerta timestamp: 1652264560238 vehiculo: {'Year': 2011, 'Make': 'Jeep', 'Model': 'Liberty', 'Category': 'SUV'}
+indexer_mongo-indexer_mongo-1     | WARNING:root:Publicando una alerta timestamp: 1652264561241 vehiculo: {'Year': 2004, 'Make': 'Isuzu', 'Model': 'Axiom', 'Category': 'SUV'}
+indexer_mongo-indexer_mongo-1     | WARNING:root:Publicando una alerta timestamp: 1652264562244 vehiculo: {'Year': 2016, 'Make': 'Toyota', 'Model': 'Land Cruiser', 'Category': 'SUV'}
+indexer_mongo-indexer_mongo-1     | WARNING:root:Publicando una alerta timestamp: 1652264562913 vehiculo: {'Year': 1995, 'Make': 'Chevrolet', 'Model': 'Blazer', 'Category': 'SUV'}
+indexer_mongo-indexer_mongo-1     | WARNING:root:Publicando una alerta timestamp: 1652264563581 vehiculo: {'Year': 2019, 'Make': 'BMW', 'Model': 'X4', 'Category': 'SUV'}
+indexer_mongo-indexer_mongo-1     | WARNING:root:Publicando una alerta timestamp: 1652264564584 vehiculo: {'Year': 2010, 'Make': 'Jeep', 'Model': 'Liberty', 'Category': 'SUV'}
+indexer_mongo-indexer_mongo-1     | WARNING:root:Publicando una alerta timestamp: 1652264564919 vehiculo: {'Year': 2003, 'Make': 'Honda', 'Model': 'CR-V', 'Category': 'SUV'}
+indexer_mongo-indexer_mongo-1     | WARNING:root:Publicando una alerta timestamp: 1652264566925 vehiculo: {'Year': 2013, 'Make': 'Jeep', 'Model': 'Grand Cherokee', 'Category': 'SUV'}
+indexer_mongo-indexer_mongo-1     | WARNING:root:Publicando una alerta timestamp: 1652264567593 vehiculo: {'Year': 2005, 'Make': 'Toyota', 'Model': 'Highlander', 'Category': 'SUV'}
+indexer_mongo-indexer_mongo-1     | WARNING:root:Publicando una alerta timestamp: 1652264568931 vehiculo: {'Year': 1995, 'Make': 'Jeep', 'Model': 'Wrangler', 'Category': 'SUV'}
+indexer_mongo-indexer_mongo-1     | WARNING:root:Publicando una alerta timestamp: 1652264569599 vehiculo: {'Year': 2019, 'Make': 'GMC', 'Model': 'Acadia', 'Category': 'SUV'}
+indexer_mongo-indexer_mongo-1     | WARNING:root:Publicando una alerta timestamp: 1652264572273 vehiculo: {'Year': 2006, 'Make': 'INFINITI', 'Model': 'QX', 'Category': 'SUV'}
+indexer_mongo-indexer_mongo-1     | WARNING:root:Publicando una alerta timestamp: 1652264572608 vehiculo: {'Year': 2004, 'Make': 'Suzuki', 'Model': 'Grand Vitara', 'Category': 'SUV'}
+indexer_mongo-indexer_mongo-1     | WARNING:root:Publicando una alerta timestamp: 1652264573611 vehiculo: {'Year': 2004, 'Make': 'BMW', 'Model': 'X3', 'Category': 'SUV'}
+indexer_mongo-indexer_mongo-1     | WARNING:root:Publicando una alerta timestamp: 1652264573945 vehiculo: {'Year': 2018, 'Make': 'Hyundai', 'Model': 'Tucson', 'Category': 'SUV'}
+indexer_mongo-indexer_mongo-1     | WARNING:root:Publicando una alerta timestamp: 1652264575282 vehiculo: {'Year': 2007, 'Make': 'Toyota', 'Model': 'RAV4', 'Category': 'SUV'}
+indexer_mongo-indexer_mongo-1     | WARNING:root:Publicando una alerta timestamp: 1652264575617 vehiculo: {'Year': 2017, 'Make': 'Subaru', 'Model': 'Forester', 'Category': 'SUV'}
+indexer_mongo-indexer_mongo-1     | WARNING:root:Publicando una alerta timestamp: 1652264576285 vehiculo: {'Year': 1998, 'Make': 'Toyota', 'Model': 'RAV4', 'Category': 'SUV'}
+indexer_mongo-indexer_mongo-1     | WARNING:root:Publicando una alerta timestamp: 1652264577288 vehiculo: {'Year': 1994, 'Make': 'GMC', 'Model': 'Jimmy', 'Category': 'SUV'}
+indexer_mongo-indexer_mongo-1     | WARNING:root:Publicando un
+
+y las detecciones se ven en la api también.
+
+-----
+
+me dedico a documentar y se lo envío a los chicos.
+
+--

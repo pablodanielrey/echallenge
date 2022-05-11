@@ -103,16 +103,61 @@ The code base consists of three components.
 
 i've used this aproach because the detections database is accesed by the api and the indexer.
 
-the api also has it's user database, that it utilize to authenticate users.
-but, as it is not shared, the code is implemented on the api itself to simplify things, and save time.
+the api also has it's user database, that it utilizes to authenticate users.
+because it is not shared, the code for the auth is implemented on the api itself to simplify things, and save time.
 as the project grows, one could extract it to a library or even another component.
-conceptually, auth has to be separate of the indexer microservice. they only must share jwt tokens.
+conceptually, auth needs to be separated of the indexer microservice. they only must share jwt tokens.
 
 ## THE DATABASE.
-it's problem to analize because of lack of context.
+Let's analyze the problem with the only information we have.
+
+the detections.
+1 - entity without relation to another entity.
+2 - json as the event format
+3 - grows indefinetly. the detections never stop
+4 - whe don't need complex querys to get the data whe need for the api.
+5 - structure of microservices, it can scale horizontally.
+6 - io bounded processing. so it's better async processing, not parallel.
+
+the database of choice = document oriented, json format ---> mongodb
+
+  -- it's a pitty because the prototype y implemented was with postgres -- (reimplementation day)
+
+the auth
+1 - user + credentials (2 entities) needs relations to one another.
+2 - in the furute could be more than one auth system. like user+pass, qrcode, etc.
+3 - historic storage of credentials to check for reuse.
+4 - fixed or semi fixed schema, can change very little across time.
+
+the database of choice = relational --> postgresql
 
 
+### Async vs Sync
 
+Mostly the workload is io bounded, so it's better to be **async**.  
+
+I what to use sqlalchemy for the relational db code because i have previous knoledge with the framework.
+SqlAlchemy stated that the async libraries are **beta** (https://docs.sqlalchemy.org/en/14/orm/extensions/asyncio.html), 
+so i decided to go for the sync route (mostly becausey don't whant to be debugging for days).
+
+Kafka, get's the same treatment, i don't whant half the code sync and half the code async.
+but i also think that for this workload it's better **async**
+
+Theory and practice is not the same. im positive that i need to benchmark the solutions to really know
+the gains by one aproch vs the other. 
+
+### The Entities and Model.
+
+I'd like to decouple as much as posible the componentes of the systems.
+
+I know that i whant uuids as entities identifiers. This gives me the ability to 
+reference them globally (between microservices, and in cases that i didn't anticipate).
+MongoDB gives them ObjectId automátically. but for consistency between databases (psql and mongo) all the
+entities have uuids as identifiers.
+
+Pydantic models when i can. they are awesome.
+
+Now, the juicy part.
 ## Deployment of the system.
 
 - First clone the repository to specific location on the hard drive.
@@ -128,9 +173,18 @@ because a package distribution system is not in place, whe have to build the pyt
 this takes time. so be patient.
 if you omit this step now, it will take place when you bring up the service using docker compose.
 
+There are two versions of the detections backend. (psql and mongodb).
+for testing, benchmarking, and why not.
+
 ```bash
-docker compose -f docker/docker-compose.indexer.yml build
+docker compose -f docker/docker-compose.indexer-postgres.yml build
 ```
+## and
+
+```bash
+docker compose -f docker/docker-compose.indexer-mongo.yml build
+```
+
 
 - whait a veeerrrryyyy looonnnggg time (eat something, drink tee, or even better, an iced cold beer)
 
@@ -159,3 +213,4 @@ docker compose -f docker/docker-compose.indexer.yml up
 if you pray enought the system will be up and running.
 
 
+## Functionality

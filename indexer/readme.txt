@@ -420,11 +420,11 @@ si podría ser un enhancement a las libs de las bases generar las versiones asyn
 
 
 3- Como la base iba a ser sincrónica seguí por el mismo camino con el consumer de kafka.
-por lo menos para el indexer es la mejor opción ya que simplifica. (mezclar sincrónico y async trae problemas asegurados).
-en este caso, manejar versión sincrónica para la base y async para kafka complejiza la solución, sin una ganancia efectiva real hoy.
+por lo menos para el indexer es la mejor opción ya que simplifica. (no quería mezclar sincrónico y async).
+en este caso, manejar versión sincrónica para la base y async para kafka complejiza la solución.
 
 
-4- Desición de diseño, las entidades de la base van a tener un uuid como identificador. 
+4- Decisión de diseño, las entidades de la base van a tener un uuid como identificador. 
 independientemente de si la base internamente asigna ids propios (mondodb - ObjectId)
 independiza la identificación de las entidades de la tecnología de backend usada. 
 y usar uuids posibilita la identificación global de las entidades dentro de los microservicios. 
