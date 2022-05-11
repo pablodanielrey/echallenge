@@ -1,7 +1,7 @@
 from fastapi import Depends
 
-from ..db import DB
 from . import models, settings
+from .db import DB
 
 
 def get_users_manager():

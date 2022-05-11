@@ -2,18 +2,18 @@ version: "3.7"
 name: indexer
 services:
 
-  # auth_db:
-  #   image: postgres:14
-  #   environment:
-  #     POSTGRES_DB: auth
-  #     POSTGRES_USER: auth
-  #     POSTGRES_PASSWORD: superrecontrasecreto
-  #   ports:
-  #     - 5432:5432
-  #   volumes:
-  #     - /tmp/data_auth:/var/lib/postgresql/data
-  #   networks:
-  #     - backend
+  auth_db:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: auth
+      POSTGRES_USER: auth
+      POSTGRES_PASSWORD: superrecontrasecreto
+    ports:
+      - 5432:5432
+    volumes:
+      - /tmp/data_auth:/var/lib/postgresql/data
+    networks:
+      - backend_auth
 
 
   indexer_pg_db:
@@ -41,33 +41,33 @@ services:
     networks:
       - backend_mongo
 
-  # api:
-  #   build: 
-  #     context: ..
-  #     dockerfile: api/Dockerfile
-  #   depends_on:
-  #     - auth_db
-  #     - indexer_db
-  #   ports:
-  #     - 8000:8000
-  #   environment:
-  #     AUTH_DB_CONNECTION: postgresql://auth:superrecontrasecreto@auth_db:5432/auth
-  #     VEHICLES_DB_CONNECTION: postgresql://indexer:superrecontrasecreto@indexer_db:5432/indexer
-  #     KAFKA_BROKER_URL: broker:9092
-  #     ALERTS_TOPIC: intellisite.alerts
-  #     JWT_KEY: 0ca4e5595f14f2261ef41004fa8b0c4a386a22ea11c1fc9dff20072fb87ea595
-  #     JWT_ALGO: HS256
-  #     JWT_EXPIRE: 30
-  #     JWT_ISSUER: epic
-  #     JWT_AUDIENCE: epic
-  #   networks:
-  #     - backend
-  #     - intellisite
-  #   # command: uvicorn indexer.api.app:app --reload --workers 2 --host 0.0.0.0 --port 8000
-  #   # command: python3 -m http.server 1026
-  #   command: python3 -m indexer.api
-  #   # volumes:
-  #   #   - ../api:/usr/app/api
+  api_pg:
+    build: 
+      context: ..
+      dockerfile: api/Dockerfile
+    depends_on:
+      - auth_db
+      - indexer_pg_db
+    ports:
+      - 8000:8000
+    environment:
+      AUTH_DB_CONNECTION: postgresql://auth:superrecontrasecreto@auth_db:5432/auth
+      VEHICLES_DB_CONNECTION: postgresql://indexer:superrecontrasecreto@indexer_pg_db:5432/indexer
+      KAFKA_BROKER_URL: broker:9092
+      ALERTS_TOPIC: intellisite.alerts
+      JWT_KEY: 0ca4e5595f14f2261ef41004fa8b0c4a386a22ea11c1fc9dff20072fb87ea595
+      JWT_ALGO: HS256
+      JWT_EXPIRE: 30
+      JWT_ISSUER: epic
+      JWT_AUDIENCE: epic
+    networks:
+      - backend_auth
+      - backend_pg
+      - intellisite
+    command: uvicorn indexer.api.app:app --reload --workers 1 --host 0.0.0.0 --port 8000
+    # command: python3 -m http.server 1026
+    volumes:
+      - ../api:/usr/app/api
 
 
   indexer_pg:
@@ -92,29 +92,31 @@ services:
     #   - ../libs/vehicles_mongo:/usr/app/vehicles_mongo
     #   - ../indexer:/usr/app/indexer
 
-  indexer_mongo:
-    build: 
-      context: ..
-      dockerfile: indexer/Dockerfile
-    depends_on:
-      - indexer_mongo_db
-    environment:
-      VEHICLES_DB_CONNECTION: mongodb://indexer:superrecontrasecreto@indexer_mongo_db:27017/
-      KAFKA_BROKER_URL: broker:9092
-      DETECTIONS_TOPIC: intellisite.detections
-      ALERTS_TOPIC: intellisite.alerts
-      SUSPICIOUS_VEHICLE: SUV
-    networks:
-      - backend_mongo
-      - intellisite
-    # command: python3 -m http.server 1026
-    # volumes:
-    #   - ../libs/db:/usr/app/db
-    #   - ../libs/vehicles_postgres:/usr/app/vehicles_postgres
-    #   - ../libs/vehicles_mongo:/usr/app/vehicles_mongo
-    #   - ../indexer:/usr/app/indexer
+  # indexer_mongo:
+  #   build: 
+  #     context: ..
+  #     dockerfile: indexer/Dockerfile
+  #   depends_on:
+  #     - indexer_mongo_db
+  #   environment:
+  #     VEHICLES_DB_CONNECTION: mongodb://indexer:superrecontrasecreto@indexer_mongo_db:27017/
+  #     KAFKA_BROKER_URL: broker:9092
+  #     DETECTIONS_TOPIC: intellisite.detections
+  #     ALERTS_TOPIC: intellisite.alerts
+  #     SUSPICIOUS_VEHICLE: SUV
+  #   networks:
+  #     - backend_mongo
+  #     - intellisite
+  #   # command: python3 -m http.server 1026
+  #   # volumes:
+  #   #   - ../libs/db:/usr/app/db
+  #   #   - ../libs/vehicles_postgres:/usr/app/vehicles_postgres
+  #   #   - ../libs/vehicles_mongo:/usr/app/vehicles_mongo
+  #   #   - ../indexer:/usr/app/indexer
 
 networks:
+  backend_auth:
+    external: false
   backend_pg:
     external: false
 

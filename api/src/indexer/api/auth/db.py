@@ -32,12 +32,12 @@ class DB:
         finally:
             session.close()
 
-    @staticmethod
-    def from_dict(cls: type[Base], data: dict[str, Any]):
-        """
-            Método utilitario para parsear dics a entidades de sqlalchemy.
-            El case de las claves no es importante ya que se lleva todo a lower. (year == Year)
-        """
-        columns_names = {c.name.lower() for c in cls.__table__.columns}
-        filtered_dict = {k.lower(): v for (k, v) in data.items() if k.lower() in columns_names}
-        return cls(**filtered_dict)
+    # @staticmethod
+    # def from_dict(cls: type[Base], data: dict[str, Any]):
+    #     """
+    #         Método utilitario para parsear dics a entidades de sqlalchemy.
+    #         El case de las claves no es importante ya que se lleva todo a lower. (year == Year)
+    #     """
+    #     columns_names = {c.name.lower() for c in cls.__table__.columns}
+    #     filtered_dict = {k.lower(): v for (k, v) in data.items() if k.lower() in columns_names}
+    #     return cls(**filtered_dict)

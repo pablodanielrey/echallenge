@@ -1,32 +1,37 @@
+from typing import Any
+from pydantic import BaseModel, Field, EmailStr
 
-from pydantic import BaseModel, Field
 
-class Pagination(BaseModel):
-    skip: int
-    limit: int
 
-class Credentials(BaseModel):
+class CredentialsOut(BaseModel):
     username: str
-    password: str
 
-class User(BaseModel):
+    class Config:
+        orm_mode = True
+
+class UserOut(BaseModel):
     name: str
     lastname: str
     email: str
+    credentials: list[CredentialsOut]
 
     class Config:
         orm_mode = True
 
 
-class UserWithCredentials(User):
-    credentials: Credentials
+class UsersList(BaseModel):
+    skip: int
+    limit: int
+    size: int
+    users: list[UserOut]
 
-    def flatten_dict(self):
-        d = self.dict()
-        d.update(d['credentials'])
-        del d['credentials']
-        return d
 
+class UserIn(BaseModel):
+    name: str
+    lastname: str
+    email: EmailStr
+    username: str
+    password: str
 
 class UserId(BaseModel):
     id: str = Field(None, description="user's id")

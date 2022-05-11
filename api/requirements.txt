@@ -1,5 +1,5 @@
 fastapi[all]
-sse_starlette
+sse-starlette
 asyncio
 uvicorn[standard]
 pydantic
@@ -7,6 +7,7 @@ email-validator
 passlib
 python-jose[cryptography]
 python-multipart
-SQLAlchemy
-psycopg2-binary
-aiokafka
+SQLAlchemy==1.4.36
+psycopg2-binary==2.9.3
+aiokafka==0.7.2
+pymongo==4.1.1

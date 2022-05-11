@@ -49,7 +49,23 @@ class SseResponse(Response):
 async def get_alerts_stream(request: Request, 
                             am: models.AlertsManager = Depends(deps.get_alerts_manager)):
     """
-    # Endpoint que permite obtener un stream de eventos de alertas detectadas por el indexer.
+    # Endpoint que permite obtener un stream de eventos de alertas detectadas por el indexer.  
+     Tener en cuenta que swagger ui no muestra correctamente el stream.  
+     Queda cargando el stream esperando que finalize la conexión para mostrarlo.  
+     Como alternativa se puede usar el endpoint de **/login**  
+     para obtener un token y utilizar una herramineta como curl para acceder al stream.  
+    #### Ej:  
+     **curl -X GET -H "Authorization: Bearer eyJhbGc4...0N89-eMVMlZvEI" http://localhost:8000/alerts**  
+
+      event: alert
+      data: {'Year': 2014, 'Make': 'Land Rover', 'Model': 'Range Rover', 'Category': 'SUV'}  
+      event: alert  
+      data: {'Year': 2013, 'Make': 'Buick', 'Model': 'Encore', 'Category': 'SUV'}  
+      event: alert  
+      data: {'Year': 2007, 'Make': 'Chevrolet', 'Model': 'Suburban 1500', 'Category': 'SUV'}  
+      event: alert  
+      data: {'Year': 2004, 'Make': 'Land Rover', 'Model': 'Freelander', 'Category': 'SUV'}  
+
     ### Returns:  
       Stream de eventos sse
     """

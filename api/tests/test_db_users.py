@@ -22,8 +22,7 @@ def test_add_users(user_manager, users):
     for u in users:
         uid = user_manager.add_user(**u)
         assert uid is not None
-        assert type(uid) is uuid.UUID
-        assert uuid.UUID(str(uid), version=4)
+        assert uuid.UUID(uid, version=4)
 
 
 def test_add_dup_user(user_manager, users):

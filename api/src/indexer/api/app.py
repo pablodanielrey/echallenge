@@ -11,7 +11,7 @@ router.include_router(indexer_routes, tags=["indexer"])
 
 description = """
 
-# Challenge de EpicIO - supercalifragilisticoespiralidoso
+# Challenge de EpicIO - SuperCalifragilisticoEspiralidoso
 
 Api que da acceso a los datos del microservicio de detección de alertas  
 Implementa también una creación de usuarios **muuuuyyy básica**, para permitir  

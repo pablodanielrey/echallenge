@@ -36,13 +36,6 @@ def test_unsecured_user_creation(client: TestClient):
     response = client.post("/users")
     assert response.status_code == 401
 
-# def test_get_token(client: TestClient):
-#     response = client.post("/token", json={
-#         "username": "string",
-#         "credentials": "string"
-#     })
-#     assert response.status_code == 200
-
 
 def test_empty_user_creation(client: TestClient, auth_headers):
     response = client.post("/users", headers=auth_headers)
@@ -53,13 +46,3 @@ def test_wrong_format_user_creation(client: TestClient, auth_headers):
     response = client.post("/users", json={"name": "Pablo"}, headers=auth_headers)
     assert response.status_code == 422
 
-
-# def test_create_user(client: TestClient):
-#     response = client.post("/users", json={
-#         "name": "Pablo",
-#         "lastname": "Rey",
-#         "username": "pablo",
-#         "password": "algosupersecreto"
-#     })
-#     assert response.status_code == 200
-#     assert "id" in response.json()["data"]

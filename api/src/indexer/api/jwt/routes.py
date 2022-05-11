@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
-from ..auth import schemas as auth_schemas
 from ..auth import deps as auth_deps
 from ..auth import models as auth_models
 from ..auth import exceptions as auth_exceptions
@@ -28,7 +27,7 @@ def oauth2_token(form_data: OAuth2PasswordRequestForm = Depends(),
         payload = {
             "sub": f"username:{form_data.username}"
         }
-        u = auth_schemas.User.from_orm(user)
+        u = schemas.UserToken.from_orm(user)
         payload.update(u.dict())
         token = jwt_manager.encode_jwt(payload)
         return schemas.Token(access_token=token, token_type="bearer")
