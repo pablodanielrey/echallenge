@@ -88,3 +88,48 @@ To remove the Docker network:
 ```bash
 $ docker network rm intelliste
 ```
+
+
+## Design of implemented code.
+
+The base code consists of three components.
+- indexer
+- api
+- libs (shared database code)
+
+
+
+## Deployment of the system.
+
+- First clone the repository to specific location on the hard drive.
+
+```bash
+cd folder
+git clone git@github.com:pablodanielrey/echallenge.git
+```
+
+- Optionally build the docker images of the indexer. 
+because a package distribution system is not in place, whe have to build the python packages inside the images.
+
+
+```bash
+docker compose -f docker/docker-compose.indexer.yml build
+```
+
+- whait a veeerrrryyyy looonnnggg time (eat something, drink tee, or even better, an iced cold beer)
+
+
+- Start the broker to init the system.
+
+```bash
+$ docker-compose -f docker/docker-compose.kafka.yml up -d
+```
+
+- Start the producer to generate detections on the broker
+
+```bash
+docker compose -f docker/docker-compose.producer.yml up
+```
+
+
+- 
