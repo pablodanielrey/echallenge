@@ -109,27 +109,27 @@ as the project grows, one could extract it to a library or even another componen
 conceptually, auth needs to be separated of the indexer microservice. they only must share jwt tokens.
 
 ## THE DATABASE.
-Let's analyze the problem with the only information we have.
+Let's analyze the problem with the only information we have.  
 
-the detections.
-1 - entity without relation to another entity.
-2 - json as the event format
-3 - grows indefinetly. the detections never stop
-4 - whe don't need complex querys to get the data whe need for the api.
-5 - structure of microservices, it can scale horizontally.
-6 - io bounded processing. so it's better async processing, not parallel.
+the detections.  
+1 - entity without relation to another entity.  
+2 - json as the event format  
+3 - grows indefinetly. the detections never stop  
+4 - whe don't need complex querys to get the data whe need for the api.  
+5 - structure of microservices, it can scale horizontally.  
+6 - io bounded processing. so it's better async processing, not parallel.  
 
-the database of choice = document oriented, json format ---> mongodb
+the database of choice = document oriented, json format ---> mongodb  
 
   -- it's a pitty because the prototype y implemented was with postgres -- (reimplementation day)
 
-the auth
-1 - user + credentials (2 entities) needs relations to one another.
-2 - in the furute could be more than one auth system. like user+pass, qrcode, etc.
-3 - historic storage of credentials to check for reuse.
-4 - fixed or semi fixed schema, can change very little across time.
+the auth  
+1 - user + credentials (2 entities) needs relations to one another.  
+2 - in the furute could be more than one auth system. like user+pass, qrcode, etc.  
+3 - historic storage of credentials to check for reuse.  
+4 - fixed or semi fixed schema, can change very little across time.  
 
-the database of choice = relational --> postgresql
+the database of choice = relational --> postgresql  
 
 
 ### Async vs Sync
@@ -144,7 +144,7 @@ Kafka, get's the same treatment, i don't whant half the code sync and half the c
 but i also think that for this workload it's better **async**
 
 Theory and practice is not the same. im positive that i need to benchmark the solutions to really know
-the gains by one aproch vs the other. 
+the gains by one aproch vs the other in this context.
 
 ### The Entities and Model.
 
