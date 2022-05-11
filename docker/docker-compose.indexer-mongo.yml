@@ -10,8 +10,8 @@ services:
       POSTGRES_PASSWORD: superrecontrasecreto
     ports:
       - 5432:5432
-    volumes:
-      - /tmp/data_auth:/var/lib/postgresql/data
+    # volumes:
+    #   - /tmp/data_auth:/var/lib/postgresql/data
     networks:
       - backend_auth
 
@@ -23,8 +23,8 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: superrecontrasecreto
     ports:
       - 27017:27017
-    volumes:
-      - /tmp/data_indexer_mongo:/data/db
+    # volumes:
+    #   - /tmp/data_indexer_mongo:/data/db
     networks:
       - backend_mongo
 

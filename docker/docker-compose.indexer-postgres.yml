@@ -10,8 +10,8 @@ services:
       POSTGRES_PASSWORD: superrecontrasecreto
     ports:
       - 5432:5432
-    volumes:
-      - /tmp/data_auth:/var/lib/postgresql/data
+    # volumes:
+    #   - /tmp/data_auth:/var/lib/postgresql/data
     networks:
       - backend_auth
 
@@ -24,8 +24,8 @@ services:
       POSTGRES_PASSWORD: superrecontrasecreto
     ports:
       - 5433:5432
-    volumes:
-      - /tmp/data_indexer:/var/lib/postgresql/data
+    # volumes:
+    #   - /tmp/data_indexer:/var/lib/postgresql/data
     networks:
       - backend_pg
 

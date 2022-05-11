@@ -3,9 +3,27 @@
 ##
 ##########################
 
+no se no por donde arrancar. en principio voy a generar un prototipo para verificar si entiendo como funciona
+el challenge.
+
+---
+
+genere un prototipo básico usando postgres como base y veo que funciona.
+pero tengo todo en un archivo asi que quiero ir generando alguna estructura mas factible de sistema.
+
+---
+
+veo que existen librerías como faust para procesar los streams de kafka.
+https://faust.readthedocs.io/en/latest/
+
+pero quiero entender bien como funciona todo asi que voy a tratar de no usarla.
+
+----
 
 para procesar el stream uso un patron como Chain of Responsibility
 básicamente tengo una cadena de procesadores y delego el procesamiento del evento a cada uno.
+si bien es overkill para lo que requiere el challenge creo que esta bueno ya dejar el patrón armado.
+
 
 
 class StreamProcessor(ABC):
@@ -41,7 +59,7 @@ pablo@xiaomi:/src/github/epic/echallenge/indexer/src/indexer/indexer/stream$ tre
 
 
 ---
-el procesador de la db
+el procesador de la db donde se almacenan los eventos.
 
 
 from indexer.vehicles import models
@@ -386,6 +404,7 @@ vehicles> db.detections.count()
 1315
 vehicles> 
 
+----
 
 vamooooooooooooooooooooo esta andando la lib también.
 perfectoooo
@@ -430,3 +449,56 @@ independiza la identificación de las entidades de la tecnología de backend usa
 y usar uuids posibilita la identificación global de las entidades dentro de los microservicios. 
 (como nota, por experiencia, ante la duda, ponele un uuid, de ultima después se lo sacas)
 
+
+
+-----
+
+
+el útlimo detalle de las detecciones y el stream de /alerts
+
+parece que swagger ui espera que termine la conexión para mostrar el resultado. 
+como es un stream sse no corta nunca la conexión, y swagger ui se queda como cargando.
+
+no encuentro anda en internet sobre el problema!!, o que me indica que es un problema mío y no de swagger ui.
+pero debuggee de todo, inclusive con tcpdump y VEO el stream de eventos!! pero no en swagger ui.
+
+si le saco la auth al endpoint y le pego a la url con un explorador directo sin auth ni nada, VEO el stream de eventos!!.
+
+asi que bueno. me doy por vencido y anoto una forma alternativa de verlo usando la autentificación.
+
+1 - acceeder al endpoint /login y loguearse para obtener el token.
+
+curl -X 'POST' \
+  'http://localhost:8000/login' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d 'grant_type=&username=admin&password=admin&scope=&client_id=&client_secret='
+
+
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VybmFtZTphZG1pbiIsIm5hbWUiOiJhZG1pbiIsImxhc3RuYW1lIjoiYWRtaW4iLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlzcyI6ImVwaWMiLCJhdWQiOiJlcGljIiwiaWF0IjoxNjUyMjg3MjkyLCJleHAiOjE2NTIyODkwOTJ9.b3XCIDjWDFVTwr_Sxs5Z3ewFfGZulfEQgyOR8Yv8lh4",
+  "token_type": "bearer"
+}
+
+
+2 - usar ese token para pegarle al endpoint de alertas con otra herramienta.
+
+curl -X GET -H "Authorization: Bearer token" http://localhost:8000/alerts
+
+donde token es en este caso:
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VybmFtZTphZG1pbiIsIm5hbWUiOiJhZG1pbiIsImxhc3RuYW1lIjoiYWRtaW4iLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlzcyI6ImVwaWMiLCJhdWQiOiJlcGljIiwiaWF0IjoxNjUyMjg3MjkyLCJleHAiOjE2NTIyODkwOTJ9.b3XCIDjWDFVTwr_Sxs5Z3ewFfGZulfEQgyOR8Yv8lh4
+
+
+ej:
+
+pablo@xiaomi:/src/github/epic/echallenge$ curl -X GET -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VybmFtZTphZG1pbiIsIm5hbWUiOiJhZG1pbiIsImxhc3RuYW1lIjoiYWRtaW4iLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlzcyI6ImVwaWMiLCJhdWQiOiJlcGljIiwiaWF0IjoxNjUyMjg3MjkyLCJleHAiOjE2NTIyODkwOTJ9.b3XCIDjWDFVTwr_Sxs5Z3ewFfGZulfEQgyOR8Yv8lh4" http://localhost:8000/alerts
+event: alert
+data: {'Year': 2003, 'Make': 'Honda', 'Model': 'Pilot', 'Category': 'SUV'}
+
+event: alert
+data: {'Year': 2010, 'Make': 'Jeep', 'Model': 'Patriot', 'Category': 'SUV'}
+
+event: alert
+data: {'Year': 2006, 'Make': 'Honda', 'Model': 'Element', 'Category': 'SUV'}
+
+event: alert

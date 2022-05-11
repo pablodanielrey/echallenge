@@ -323,15 +323,8 @@ al no existir el índice se inserta igual.
 
 2- muchísimo mas simple la conectividad con la base.
 
+---
 
-
-
-
-##################
-##
-## ultimos touchs journey
-##
-###################
 
 comienzo a verificar que todo el código haya quedado coherente.
 que los aspectos de diseño sean coherentes en los 3 lados (indexer, api, libs)

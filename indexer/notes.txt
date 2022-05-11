@@ -1,0 +1,113 @@
+
+En cuanto a la elección de la base.
+para casos genéricos sin mas contexto, uso postgres, porque me da posibilidades de abarcar mas soluciones con una sola tecnología.
+inclusive para tablas planas sin realaciones (el peor caso de una base relacional), postgres da buenos resultados con cantidades de registros aceptables, por lo menos para evaluar 
+el prototipo inicial.
+
+para este caso!!! 
+claramente la base para usar es mongodb o alguna alternativa orientada a documentos no relacional.
+pensando en los requerimientos del sistema hoy (sin mas contexto que el de la descripción del challenge)
+
+1 - entidad sin relaciones
+2 - formato json
+3 - crece infinitamente
+4 - no se necesitan consultas complejas. solo una de agregación.
+5 - usada por un microservicio el cual podría escalar horizontalmente para abracar x nodos. (debería poder escalar horizontalmente)
+6 - el trabajo principal hoy es io bounded. por lo que la implementación debería ser asincrónica!.
+
+
+para el tema de autenticación de la api es claramente lo contrario.
+
+1 - usuario + auth, 2 entidades relacionadas (a mi entender son separadas. un usuario podría tener mas mecanismos de autenticación)
+2 - no es una tabla que crece infinitamente.
+3 - tiene un esquema fijo que no debe cambiar, salvo un buen análisis que así lo amerite. (migraciones de esquemas controlada)
+4 - posiblemente a futuro se puedan añadir mas entidades relacionadas (métodos de auth adicionales a una clave, ej qr, etc)
+
+para estas entidades el esquema relacional es el mas adecuado. (uso postgres)
+solo lo implemento en la api para simplificar y ahorrar tiempo.
+
+
+
+1 - Para las bases relacionales.
+use sqlalchemy para no tener que lidiar con la conversión de tipos, y sanitización de datos.
+NO elegí implementar la lib de postgres de forma asincrónica debido a que  en la doc de sqlalchemy especifica que esta en fase beta y tengo
+mas experiencia con la versión sincrónica. (no quiero estar programando por semanas y debuggeando problemas)
+
+https://docs.sqlalchemy.org/en/14/orm/extensions/asyncio.html
+
+"""
+Tip
+The asyncio extension as of SQLAlchemy 1.4.3 can now be considered to be beta level software. API details are subject to change however at this point it is unlikely for there to be significant backwards-incompatible changes.
+"""
+
+igualmente tengo claro que para este tipo de soluciones io bounded lo mejor son las versiones async.
+
+
+2- Para la base de mongo tamibén use la versión sincrónica.
+debido a que no quiero implementar 2 veces la lógica de la capa de la base. (una para lo sincrónico y otro para lo async)
+si podría ser un enhancement a las libs de las bases generar las versiones async.
+
+
+3- Como la base iba a ser sincrónica seguí por el mismo camino con el consumer de kafka.
+por lo menos para el indexer es la mejor opción ya que simplifica. (no quería mezclar sincrónico y async).
+en este caso, manejar versión sincrónica para la base y async para kafka complejiza la solución.
+
+
+4- Decisión de diseño, las entidades de la base van a tener un uuid como identificador. 
+independientemente de si la base internamente asigna ids propios (mondodb - ObjectId)
+independiza la identificación de las entidades de la tecnología de backend usada. 
+y usar uuids posibilita la identificación global de las entidades dentro de los microservicios. 
+(como nota, por experiencia, ante la duda, ponele un uuid, de ultima después se lo sacas)
+
+
+
+----
+
+el útlimo detalle de las detecciones y el stream de /alerts
+
+parece que swagger ui espera que termine la conexión para mostrar el resultado. 
+como es un stream sse no corta nunca la conexión, y swagger ui se queda como cargando.
+
+no encuentro anda en internet sobre el problema!!, o que me indica que es un problema mío y no de swagger ui.
+pero debuggee de todo, inclusive con tcpdump y VEO el stream de eventos!! pero no en swagger ui.
+
+si le saco la auth al endpoint y le pego a la url con un explorador directo sin auth ni nada, VEO el stream de eventos!!.
+
+asi que bueno. me doy por vencido y anoto una forma alternativa de verlo usando la autentificación.
+
+1 - acceeder al endpoint /login y loguearse para obtener el token.
+
+curl -X 'POST' \
+  'http://localhost:8000/login' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d 'grant_type=&username=admin&password=admin&scope=&client_id=&client_secret='
+
+
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VybmFtZTphZG1pbiIsIm5hbWUiOiJhZG1pbiIsImxhc3RuYW1lIjoiYWRtaW4iLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlzcyI6ImVwaWMiLCJhdWQiOiJlcGljIiwiaWF0IjoxNjUyMjg3MjkyLCJleHAiOjE2NTIyODkwOTJ9.b3XCIDjWDFVTwr_Sxs5Z3ewFfGZulfEQgyOR8Yv8lh4",
+  "token_type": "bearer"
+}
+
+
+2 - usar ese token para pegarle al endpoint de alertas con otra herramienta.
+
+curl -X GET -H "Authorization: Bearer token" http://localhost:8000/alerts
+
+donde token es en este caso:
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VybmFtZTphZG1pbiIsIm5hbWUiOiJhZG1pbiIsImxhc3RuYW1lIjoiYWRtaW4iLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlzcyI6ImVwaWMiLCJhdWQiOiJlcGljIiwiaWF0IjoxNjUyMjg3MjkyLCJleHAiOjE2NTIyODkwOTJ9.b3XCIDjWDFVTwr_Sxs5Z3ewFfGZulfEQgyOR8Yv8lh4
+
+
+ej:
+
+pablo@xiaomi:/src/github/epic/echallenge$ curl -X GET -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VybmFtZTphZG1pbiIsIm5hbWUiOiJhZG1pbiIsImxhc3RuYW1lIjoiYWRtaW4iLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlzcyI6ImVwaWMiLCJhdWQiOiJlcGljIiwiaWF0IjoxNjUyMjg3MjkyLCJleHAiOjE2NTIyODkwOTJ9.b3XCIDjWDFVTwr_Sxs5Z3ewFfGZulfEQgyOR8Yv8lh4" http://localhost:8000/alerts
+event: alert
+data: {'Year': 2003, 'Make': 'Honda', 'Model': 'Pilot', 'Category': 'SUV'}
+
+event: alert
+data: {'Year': 2010, 'Make': 'Jeep', 'Model': 'Patriot', 'Category': 'SUV'}
+
+event: alert
+data: {'Year': 2006, 'Make': 'Honda', 'Model': 'Element', 'Category': 'SUV'}
+
+event: alert

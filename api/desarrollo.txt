@@ -554,6 +554,37 @@ y las detecciones se ven en la api también.
 
 -----
 
-me dedico a documentar y se lo envío a los chicos.
+voy a ver si sale andando lo del build de los packages mediante docker.
+voy a probar con dockerfiles multistage asi quedan mas chicas las imágenes.
+la laternativa es levantar un registry y hacer deploy de los packages ahi dentro del compose.
+y que el indexer y la api tomen las dependencias de ese registry. (plan b)
 
---
+---
+
+copio mi key para que use docker para clonar el repo.
+y agrego al gitignore la key!!!.
+
+pablo@xiaomi:/src/github/epic/echallenge$ cp /home/pablo/.ssh/id_rsa ./ssh-private-key
+
+ahora si la hora de la verdad!!.
+
+
+pablo@xiaomi:/src/github/epic/echallenge$ docker build -t api_pg -f api/Dockerfile .
+Sending build context to Docker daemon   2.49MB
+Step 1/22 : FROM python:3.9
+3.9: Pulling from library/python
+67e8aa6c
+
+...
+ ---> e9855c8f07a8
+Successfully built e9855c8f07a8
+Successfully tagged api_pg:latest
+pablo@xiaomi:/src/github/epic/echallenge$ 
+
+
+contra todos los pronósticos funcionó a la primera!!!! y los test corrieron ok.
+intento levantar el docker-compose a ver como se comporta y ya estaría para entregar.
+
+---
+
+
