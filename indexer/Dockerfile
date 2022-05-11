@@ -18,6 +18,7 @@ RUN pip install -U pip && pip install -U build
 
 # solo hasta que libere el acceso al repo uso mi key
 # ENV GIT_SSH_COMMAND='ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i /src/id_rsa_github'
+ENV GIT_SSH_COMMAND='ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
 # ADD ssh-private-key /src/id_rsa_github
 RUN git clone git@github.com:pablodanielrey/echallenge.git ./echallenge
 
