@@ -41,7 +41,7 @@ services:
   #   networks:
   #     - backend_mongo
 
-  api_pg:
+  api:
     build: 
       context: ..
       dockerfile: api/Dockerfile
@@ -70,7 +70,7 @@ services:
     #   - ../api:/usr/app/api
 
 
-  indexer_pg:
+  indexer:
     build: 
       context: ..
       dockerfile: indexer/Dockerfile
@@ -120,7 +120,5 @@ networks:
   backend_pg:
     external: false
 
-  backend_mongo:
-    external: false
   intellisite:
    external: true
