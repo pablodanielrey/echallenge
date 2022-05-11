@@ -23,5 +23,10 @@ ADD libs/vehicles_postgres/dist/ ./libs
 ADD api/dist ./api
 # RUN python -m build ./api && pip install ./api/dist/indexer_api-0.0.2-py3-none-any.whl
 
+RUN pip install ./libs/indexer_vehicles-0.0.2.tar.gz && \
+    pip install ./libs/indexer_vehicles_postgres-0.0.2.tar.gz && \
+    pip install ./libs/indexer_vehicles_mongo-0.0.2.tar.gz && \
+    pip install ./api/*.tar.gz
+
 
 CMD ["python3", "-m", "indexer.api"]
