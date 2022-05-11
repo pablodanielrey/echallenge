@@ -111,7 +111,7 @@ conceptually, auth needs to be separated of the indexer microservice. they only 
 ## THE DATABASE.
 Let's analyze the problem with the only information we have.  
 
-the detections.  
+The detections.  
 1 - entity without relation to another entity.  
 2 - json as the event format  
 3 - grows indefinetly. the detections never stop  
@@ -119,17 +119,17 @@ the detections.
 5 - structure of microservices, it can scale horizontally.  
 6 - io bounded processing. so it's better async processing, not parallel.  
 
-the database of choice = document oriented, json format ---> mongodb  
+database of choice = document oriented, json format ---> mongodb  
 
-  -- it's a pitty because the prototype y implemented was with postgres -- (reimplementation day)
+  -- it's a pitty because the prototype i've implemented was with postgres -- (reimplementation day)
 
-the auth  
+The auth  
 1 - user + credentials (2 entities) needs relations to one another.  
 2 - in the furute could be more than one auth system. like user+pass, qrcode, etc.  
 3 - historic storage of credentials to check for reuse.  
 4 - fixed or semi fixed schema, can change very little across time.  
 
-the database of choice = relational --> postgresql  
+database of choice = relational --> postgresql  
 
 
 ### Async vs Sync
