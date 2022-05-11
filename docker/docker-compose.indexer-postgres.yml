@@ -1,5 +1,5 @@
 version: "3.7"
-name: indexer
+name: indexer_postgres
 services:
 
   auth_db:
@@ -29,18 +29,6 @@ services:
     networks:
       - backend_pg
 
-  # indexer_mongo_db:
-  #   image: mongo
-  #   environment:
-  #     MONGO_INITDB_ROOT_USERNAME: indexer
-  #     MONGO_INITDB_ROOT_PASSWORD: superrecontrasecreto
-  #   ports:
-  #     - 27017:27017
-  #   volumes:
-  #     - /tmp/data_indexer_mongo:/data/db
-  #   networks:
-  #     - backend_mongo
-
   api:
     build: 
       context: ..
@@ -69,7 +57,6 @@ services:
     # volumes:
     #   - ../api:/usr/app/api
 
-
   indexer:
     build: 
       context: ..
@@ -91,28 +78,6 @@ services:
     #   - ../libs/vehicles_postgres:/usr/app/vehicles_postgres
     #   - ../libs/vehicles_mongo:/usr/app/vehicles_mongo
     #   - ../indexer:/usr/app/indexer
-
-  # indexer_mongo:
-  #   build: 
-  #     context: ..
-  #     dockerfile: indexer/Dockerfile
-  #   depends_on:
-  #     - indexer_mongo_db
-  #   environment:
-  #     VEHICLES_DB_CONNECTION: mongodb://indexer:superrecontrasecreto@indexer_mongo_db:27017/
-  #     KAFKA_BROKER_URL: broker:9092
-  #     DETECTIONS_TOPIC: intellisite.detections
-  #     ALERTS_TOPIC: intellisite.alerts
-  #     SUSPICIOUS_VEHICLE: SUV
-  #   networks:
-  #     - backend_mongo
-  #     - intellisite
-  #   # command: python3 -m http.server 1026
-  #   # volumes:
-  #   #   - ../libs/db:/usr/app/db
-  #   #   - ../libs/vehicles_postgres:/usr/app/vehicles_postgres
-  #   #   - ../libs/vehicles_mongo:/usr/app/vehicles_mongo
-  #   #   - ../indexer:/usr/app/indexer
 
 networks:
   backend_auth:

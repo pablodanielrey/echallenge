@@ -1,5 +1,5 @@
 version: "3.7"
-name: indexer
+name: indexer_mongo
 services:
 
   auth_db:

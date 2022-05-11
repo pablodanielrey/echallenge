@@ -90,12 +90,26 @@ $ docker network rm intelliste
 ```
 
 
-## Design of implemented code.
 
-The base code consists of three components.
+## Now - THE IMPLEMENTATION of the challenge.
+
+
+## Design of the implemented microservice.
+
+The code base consists of three components.
 - indexer
 - api
 - libs (shared database code)
+
+i've used this aproach because the detections database is accesed by the api and the indexer.
+
+the api also has it's user database, that it utilize to authenticate users.
+but, as it is not shared, the code is implemented on the api itself to simplify things, and save time.
+as the project grows, one could extract it to a library or even another component.
+conceptually, auth has to be separate of the indexer microservice. they only must share jwt tokens.
+
+## THE DATABASE.
+it's problem to analize because of lack of context.
 
 
 
@@ -106,6 +120,7 @@ The base code consists of three components.
 ```bash
 cd folder
 git clone git@github.com:pablodanielrey/echallenge.git
+cd echallenge
 ```
 
 - Optionally build the docker images of the indexer. 
@@ -119,6 +134,8 @@ docker compose -f docker/docker-compose.indexer.yml build
 
 - whait a veeerrrryyyy looonnnggg time (eat something, drink tee, or even better, an iced cold beer)
 
+
+- Now follow the steps of the challenge to bring up the system.
 
 - Start the broker to init the system.
 
@@ -137,3 +154,8 @@ docker compose -f docker/docker-compose.producer.yml up
 ```bash
 docker compose -f docker/docker-compose.indexer.yml up
 ```
+
+- now pray, pray, pray to the new, and the old gods.
+if you pray enought the system will be up and running.
+
+

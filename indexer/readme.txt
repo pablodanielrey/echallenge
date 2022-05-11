@@ -174,7 +174,7 @@ WARNING:root:Procesando evento con: <indexer.indexer.stream.processors.detect_al
 ya tengo un prototipo del indexer desarrollado.
 Ahora en cuando a la elección de la base.
 para casos genéricos sin mas contexto, uso postgres, porque me da posibilidades de abarcar mas soluciones con una sola tecnología.
-inclusive para tablas lisas sin realaciones (el peor caso de una base relacional), postgres da buenos resultados con cantidades de registros aceptables, por lo menos para evaluar 
+inclusive para tablas planas sin realaciones (el peor caso de una base relacional), postgres da buenos resultados con cantidades de registros aceptables, por lo menos para evaluar 
 el prototipo inicial.
 
 para este caso!!! 
@@ -191,13 +191,13 @@ pensando en los requerimientos del sistema hoy (sin mas contexto que el de la de
 
 para el tema de autenticación de la api es claramente lo contrario.
 
-1 - usuario + auth, 2 entidades relacionadas.
+1 - usuario + auth, 2 entidades relacionadas (a mi entender son separadas. un usuario podría tener mas mecanismos de autenticación)
 2 - no es una tabla que crece infinitamente.
 3 - tiene un esquema fijo que no debe cambiar, salvo un buen análisis que así lo amerite. (migraciones de esquemas controlada)
 4 - posiblemente a futuro se puedan añadir mas entidades relacionadas (métodos de auth adicionales a una clave, ej qr, etc)
 
-para estas entidades el esquema relacional es el mas adecuado. (va postgres)
-solo lo implemento en la api para simplificar.
+para estas entidades el esquema relacional es el mas adecuado. (uso postgres)
+solo lo implemento en la api para simplificar y ahorrar tiempo.
 
 
 -----
@@ -430,4 +430,3 @@ independiza la identificación de las entidades de la tecnología de backend usa
 y usar uuids posibilita la identificación global de las entidades dentro de los microservicios. 
 (como nota, por experiencia, ante la duda, ponele un uuid, de ultima después se lo sacas)
 
-5- 
