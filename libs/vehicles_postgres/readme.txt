@@ -19,7 +19,7 @@ manejo los accesos a la base mediante un contextmanager que obtiene las sesiones
         finally:
             session.close()
 
-me funcionó bien ese patrón.
+en general me funciona bien ese patrón.
 
 
 -- 

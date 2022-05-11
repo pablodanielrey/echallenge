@@ -75,7 +75,7 @@ services:
       context: ..
       dockerfile: indexer/Dockerfile
     depends_on:
-      - indexer_db
+      - indexer_pg_db
     environment:
       VEHICLES_DB_CONNECTION: postgresql://indexer:superrecontrasecreto@indexer_pg_db:5432/indexer
       KAFKA_BROKER_URL: broker:9092
@@ -85,19 +85,19 @@ services:
     networks:
       - backend_pg
       - intellisite
-    command: python3 -m http.server 1026
-    volumes:
-      - ../libs/db:/usr/app/db
-      - ../libs/vehicles_postgres:/usr/app/vehicles_postgres
-      - ../libs/vehicles_mongo:/usr/app/vehicles_mongo
-      - ../indexer:/usr/app/indexer
+    # command: python3 -m http.server 1026
+    # volumes:
+    #   - ../libs/db:/usr/app/db
+    #   - ../libs/vehicles_postgres:/usr/app/vehicles_postgres
+    #   - ../libs/vehicles_mongo:/usr/app/vehicles_mongo
+    #   - ../indexer:/usr/app/indexer
 
   indexer_mongo:
     build: 
       context: ..
       dockerfile: indexer/Dockerfile
     depends_on:
-      - indexer_db
+      - indexer_mongo_db
     environment:
       VEHICLES_DB_CONNECTION: mongodb://indexer:superrecontrasecreto@indexer_mongo_db:27017/
       KAFKA_BROKER_URL: broker:9092
@@ -107,12 +107,12 @@ services:
     networks:
       - backend_mongo
       - intellisite
-    command: python3 -m http.server 1026
-    volumes:
-      - ../libs/db:/usr/app/db
-      - ../libs/vehicles_postgres:/usr/app/vehicles_postgres
-      - ../libs/vehicles_mongo:/usr/app/vehicles_mongo
-      - ../indexer:/usr/app/indexer
+    # command: python3 -m http.server 1026
+    # volumes:
+    #   - ../libs/db:/usr/app/db
+    #   - ../libs/vehicles_postgres:/usr/app/vehicles_postgres
+    #   - ../libs/vehicles_mongo:/usr/app/vehicles_mongo
+    #   - ../indexer:/usr/app/indexer
 
 networks:
   backend_pg:

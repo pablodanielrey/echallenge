@@ -4,8 +4,6 @@
 ##########################
 
 
-
-
 para procesar el stream uso un patron como Chain of Responsibility
 básicamente tengo una cadena de procesadores y delego el procesamiento del evento a cada uno.
 
@@ -124,9 +122,6 @@ class Detection(Base):
     category = Column(String)
 
 
-----
-
-
 
 ----
 
@@ -174,7 +169,45 @@ WARNING:root:Procesando evento con: <indexer.indexer.stream.processors.detect_al
 WARNING:root:Procesando evento con: <indexer.indexer.stream.processors.persist_to_db.PersistToDB object at 0x7fbcc3590b20>
 WARNING:root:Procesando evento con: <indexer.indexer.stream.processors.detect_alert.DetectAlert object at 0x7fbcc4a3a400>
 
+---
 
+ya tengo un prototipo del indexer desarrollado.
+Ahora en cuando a la elección de la base.
+para casos genéricos sin mas contexto, uso postgres, porque me da posibilidades de abarcar mas soluciones con una sola tecnología.
+inclusive para tablas lisas sin realaciones (el peor caso de una base relacional), postgres da buenos resultados con cantidades de registros aceptables, por lo menos para evaluar 
+el prototipo inicial.
+
+para este caso!!! 
+claramente la base para usar es mongodb o alguna alternativa orientada a documentos no relacional.
+pensando en los requerimientos del sistema hoy (sin mas contexto que el de la descripción del challenge)
+
+1 - entidad sin relaciones
+2 - formato json
+3 - crece infinitamente
+4 - no se necesitan consultas complejas. solo una de agregación.
+5 - usada por un microservicio el cual podría escalar horizontalmente para abracar x nodos. (debería poder escalar horizontalmente)
+6 - el trabajo principal hoy es io bounded. por lo que la implementación debería ser asincrónica!.
+
+
+para el tema de autenticación de la api es claramente lo contrario.
+
+1 - usuario + auth, 2 entidades relacionadas.
+2 - no es una tabla que crece infinitamente.
+3 - tiene un esquema fijo que no debe cambiar, salvo un buen análisis que así lo amerite. (migraciones de esquemas controlada)
+4 - posiblemente a futuro se puedan añadir mas entidades relacionadas (métodos de auth adicionales a una clave, ej qr, etc)
+
+para estas entidades el esquema relacional es el mas adecuado. (va postgres)
+solo lo implemento en la api para simplificar.
+
+
+-----
+
+ahora tengo implementado en postgres el prototipo, voy a refactorizar para poder manejar 2 tipos de bases de datos para las detecciones.
+la lógica detrás de esto es pensando en que el microservicio se puede complejizar a futuro. (por ahi eso acompaña al esquema de datos)
+por lo que implemento abstracciones para permitir el cambio hoy de forma simple.
+
+o sea: mongodb y postgresql van a ser una opción de almacenamiento de las detecciones.
+NO para la autenticación. la autenticación va a postgres.
 
 -----
 
@@ -360,4 +393,41 @@ perfectoooo
 ------
 
 
+documento un poco el código y paso a verificar la api.
 
+---
+
+algunos comentarios sobre la implementación final:
+
+1 - Para las bases relacionales.
+use sqlalchemy para no tener que lidiar con la conversión de tipos, y sanitización de datos.
+NO elegí implementar la lib de postgres de forma asincrónica debido a que  en la doc de sqlalchemy especifica que esta en fase beta y tengo
+mas experiencia con la versión sincrónica. (no quiero estar programando por semanas y debuggeando problemas)
+
+https://docs.sqlalchemy.org/en/14/orm/extensions/asyncio.html
+
+"""
+Tip
+The asyncio extension as of SQLAlchemy 1.4.3 can now be considered to be beta level software. API details are subject to change however at this point it is unlikely for there to be significant backwards-incompatible changes.
+"""
+
+igualmente tengo claro que para este tipo de soluciones io bounded lo mejor son las versiones async.
+
+
+2- Para la base de mongo tamibén use la versión sincrónica.
+debido a que no quiero implementar 2 veces la lógica de la capa de la base. (una para lo sincrónico y otro para lo async)
+si podría ser un enhancement a las libs de las bases generar las versiones async.
+
+
+3- Como la base iba a ser sincrónica seguí por el mismo camino con el consumer de kafka.
+por lo menos para el indexer es la mejor opción ya que simplifica. (mezclar sincrónico y async trae problemas asegurados).
+en este caso, manejar versión sincrónica para la base y async para kafka complejiza la solución, sin una ganancia efectiva real hoy.
+
+
+4- Desición de diseño, las entidades de la base van a tener un uuid como identificador. 
+independientemente de si la base internamente asigna ids propios (mondodb - ObjectId)
+independiza la identificación de las entidades de la tecnología de backend usada. 
+y usar uuids posibilita la identificación global de las entidades dentro de los microservicios. 
+(como nota, por experiencia, ante la duda, ponele un uuid, de ultima después se lo sacas)
+
+5- 
