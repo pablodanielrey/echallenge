@@ -214,17 +214,17 @@ docker compose -f docker/docker-compose.indexer.yml up
 ```
 
 - now pray, pray, pray to the new, and the old gods.
-if you pray enought the system will be up and running.
+if you pray enough the system will be up and running.
 
 
 ## Functionality
 
 - it has the required endpoints.
-- the initial user you need to generate. (/admin) - no authentication needed
+- you need to generate the initial (http://localhost:8000/admin) - no authentication needed
 - you can access swagger ui in the folowing url (http://localhost:8000/docs)
 
 
-## Notes
+## Notes!!!
 
 At the time (http://localhost:8000/alerts) does not show the stream in swagger ui.
 i couldn't make it work even setting the media type response correct.
