@@ -119,9 +119,13 @@ The detections.
 5 - structure of microservices, it can scale horizontally.  
 6 - io bounded processing. so it's better async processing, not parallel.  
 
-database of choice = document oriented, json format ---> mongodb  
+database of choice = document oriented, json format ---> mongodb 
 
   -- it's a pitty because the prototype i've implemented was with postgres -- (reimplementation day)
+
+it gives me the oportunity to implement abstraction in that layer. so if the detections schema grows in the future  
+and it need to be relational (more entities or another requirements emerge, etc) i have some work done in that respect.
+
 
 The auth  
 1 - user + credentials (2 entities) needs relations to one another.  
@@ -214,3 +218,44 @@ if you pray enought the system will be up and running.
 
 
 ## Functionality
+
+- it has the required endpoints.
+- the initial user you need to generate. (/admin) - no authentication needed
+- you can access swagger ui in the folowing url (http://localhost:8000/docs)
+
+
+## Notes
+
+At the time (http://localhost:8000/alerts) does not show the stream in swagger ui.
+i couldn't make it work even setting the media type response correct.
+but the endpoint is working because you view the alerts stream with another tool.
+it seems that swagger ui is waiting for the connection to end to show you the data.
+
+workaround:
+
+- 1 - get the token from /login
+
+```bash
+curl -X 'POST' \
+  'http://localhost:8000/login' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d 'grant_type=&username=admin&password=admin&scope=&client_id=&client_secret='
+```
+
+- 2 - take note of the token received.
+
+```
+{"access_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJz  
+..
+1CbjRu5xkl0c_S9LdUp1lcYnaSxGnlPH3vM","token_type":"bearer"}
+```
+
+- 3 - access the endpoint with curl for example
+
+```bash
+curl -X GET -H "Authorization: Bearer eyJhbGciO......nlPH3vM" http://localhost:8000/alerts
+```
+
+
+### Happy testing!!!!.
