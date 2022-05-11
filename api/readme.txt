@@ -181,3 +181,14 @@ root@e596395a8bc1:/usr/app/api#
 perfecto. anda todo lo que había testeado.
 
 --
+
+genero el dist para la api para le dockerfile.
+
+root@e596395a8bc1:/usr/app# python3 -m build ./api/
+* Creating virtualenv isolated environment...
+* Installing packages in isolated environment... (setuptools>=42.0, wheel)
+* Getting dependencies for sdist...
+running egg_
+
+---
+

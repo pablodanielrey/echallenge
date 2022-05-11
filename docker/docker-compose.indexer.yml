@@ -29,17 +29,17 @@ services:
     networks:
       - backend_pg
 
-  indexer_mongo_db:
-    image: mongo
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: indexer
-      MONGO_INITDB_ROOT_PASSWORD: superrecontrasecreto
-    ports:
-      - 27017:27017
-    volumes:
-      - /tmp/data_indexer_mongo:/data/db
-    networks:
-      - backend_mongo
+  # indexer_mongo_db:
+  #   image: mongo
+  #   environment:
+  #     MONGO_INITDB_ROOT_USERNAME: indexer
+  #     MONGO_INITDB_ROOT_PASSWORD: superrecontrasecreto
+  #   ports:
+  #     - 27017:27017
+  #   volumes:
+  #     - /tmp/data_indexer_mongo:/data/db
+  #   networks:
+  #     - backend_mongo
 
   api_pg:
     build: 
@@ -64,10 +64,10 @@ services:
       - backend_auth
       - backend_pg
       - intellisite
-    command: uvicorn indexer.api.app:app --reload --workers 1 --host 0.0.0.0 --port 8000
-    # command: python3 -m http.server 1026
-    volumes:
-      - ../api:/usr/app/api
+    # command: uvicorn indexer.api.app:app --reload --workers 1 --host 0.0.0.0 --port 8000
+    # # command: python3 -m http.server 1026
+    # volumes:
+    #   - ../api:/usr/app/api
 
 
   indexer_pg:

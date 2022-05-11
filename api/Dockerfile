@@ -20,8 +20,8 @@ RUN python -m build ./vehicles_mongo && pip install ./vehicles_mongo/dist/indexe
 ADD libs/vehicles_postgres ./vehicles_postgres
 RUN python -m build ./vehicles_postgres && pip install ./vehicles_postgres/dist/indexer_vehicles_postgres-0.0.1-py3-none-any.whl
 
-
 ADD api ./api
-RUN pip install ./api
+RUN python -m build ./api && pip install ./api/dist/indexer_api-0.0.1-py3-none-any.whl
+
 
 CMD ["python3", "-m", "indexer.api"]
