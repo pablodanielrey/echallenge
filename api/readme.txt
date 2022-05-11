@@ -198,3 +198,13 @@ y eso provoca que tire errores al ejecutarse.
 voy a probar incrementando las versiones a ver que pasa.
 
 --
+
+me volví loco buscando 2 horas por que no generaba correctamnete los packages de python de la api.
+solo contenía el root.
+me parece que es:
+
+[options]
+packages = find_namespace:
+
+ya que para unificar los proyectos del microservice use 
+named namespaces.

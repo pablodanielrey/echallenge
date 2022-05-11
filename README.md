@@ -110,7 +110,8 @@ git clone git@github.com:pablodanielrey/echallenge.git
 
 - Optionally build the docker images of the indexer. 
 because a package distribution system is not in place, whe have to build the python packages inside the images.
-
+this takes time. so be patient.
+if you omit this step now, it will take place when you bring up the service using docker compose.
 
 ```bash
 docker compose -f docker/docker-compose.indexer.yml build
@@ -131,5 +132,8 @@ $ docker-compose -f docker/docker-compose.kafka.yml up -d
 docker compose -f docker/docker-compose.producer.yml up
 ```
 
+- Now it's time to bring the microservice up.
 
-- 
+```bash
+docker compose -f docker/docker-compose.indexer.yml up
+```
