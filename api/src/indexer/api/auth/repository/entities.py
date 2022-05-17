@@ -3,8 +3,11 @@ import uuid
 from sqlalchemy import Column, String, Boolean, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm import declarative_base
 
-from .db import Base
+#from .auth import Base
+
+Base = declarative_base()
 
 
 class User(Base):

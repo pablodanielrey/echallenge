@@ -588,3 +588,6 @@ intento levantar el docker-compose a ver como se comporta y ya estaría para ent
 ---
 
 
+voy implementar dbb usando behave para tener tests de contrato.
+instalo behave y testeo a ver si un test básico corre.
+
