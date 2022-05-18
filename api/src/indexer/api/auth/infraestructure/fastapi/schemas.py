@@ -42,3 +42,17 @@ class UserIdOut(BaseModel):
 class AdminOut(UserIdOut):
     username: str
     password: str
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class UserToken(BaseModel):
+    name: str
+    lastname: str
+    email: str
+
+    class Config:
+        orm_mode = True    

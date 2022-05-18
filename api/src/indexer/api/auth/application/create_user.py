@@ -1,8 +1,9 @@
+from typing import Optional, Union, Any
 
-from typing import Union, Any
-from ..repository.auth import AuthRepository
+from ..domain import models, AuthRepository
 
-from . import UseCase, models
+from . import UseCase
+
 
 class CreateUser(UseCase):
 
@@ -28,9 +29,6 @@ class CreateUser(UseCase):
             ]
         )
 
-        with self.repo.session() as session:
-            uid = session.add_user(user)
-            session.commit()
-
-        user.id = uid
+        uid = self.repo.add(user)
+        user = self.repo.find(uid)
         return user

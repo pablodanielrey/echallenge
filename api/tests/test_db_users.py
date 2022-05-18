@@ -1,8 +1,9 @@
 import uuid
 import pytest
 
-from indexer.api.auth import deps
-from indexer.api.auth.repository import entities, exceptions
+from indexer.api.auth.infraestructure.fastapi import deps
+from indexer.api.auth.infraestructure.repo import entities
+from indexer.api.auth.infraestructure.repo import exceptions
 
 
 @pytest.fixture(scope="session")

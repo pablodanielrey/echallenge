@@ -1,19 +1,9 @@
 from typing import Optional, Union, Any
-# from passlib.hash import pbkdf2_sha256
 
-# from sqlalchemy import select, exc
-# from sqlalchemy.orm import selectinload
+from ..domain import models, AuthRepository
 
-# from pydantic import BaseModel
-# from ..repository import entities
-
-from indexer.api.auth.repository import AuthRepository, AuthSession
-
-
-# from ..repository.exceptions import IntegrityError, IncorrectCredentials, UserNotFound
-from .. import schemas
-from . import UseCase, models
 from . import UseCase
+
 
 
 class AddAdmin(UseCase):
@@ -37,12 +27,7 @@ class AddAdmin(UseCase):
                 )
             ]
         )
-        assert user.credentials is not None
-        assert len(user.credentials) == 1
 
-        with self.repo.session() as session:
-            uid = session.add_user(user)
-            session.commit()
-
-        user.id = uid
-        return user
+        uid = self.repo.add(user=user)
+        ruser = self.repo.find(uid)
+        return ruser

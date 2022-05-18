@@ -1,29 +1,45 @@
 from typing import Optional
 from uuid import UUID
-# from passlib.hash import pbkdf2_sha256
+from passlib.hash import pbkdf2_sha256
 
-# from sqlalchemy import select, exc
-# from sqlalchemy.orm import selectinload
+from pydantic import BaseModel
 
-from pydantic import BaseModel, EmailStr
+from .exceptions import CredentialsNotFound, IncorrectCredentials
 
-# from .repository import entities
+class Hasher:
+    """
+    Implementa el hash de las claves dentro de la base.
+    Por ahora es una clase con métodos de clase. después veo la mejor forma de abstracción dentro del sistema.
+    Nota: es usada solo dentro de esta capa.
+    """
 
-# from .repository.auth import DB
-# from .repository.exceptions import IntegrityError, IncorrectCredentials, UserNotFound
-# from . import schemas
+    @classmethod
+    def hash(cls, password: str) -> str:
+        hash = pbkdf2_sha256.hash(password)
+        return hash
 
-# import logging
-# logging.getLogger().setLevel(logging.DEBUG)
+    @classmethod
+    def verify(cls, password: str, hash: str):
+        if pbkdf2_sha256.verify(password, password):
+            raise IncorrectCredentials()
+
 
 
 class Credentials(BaseModel):
     username: str
     password: str
+    valid: bool = True
 
     class Config:
         orm_mode = True
 
+    def is_valid(self):
+        return self.valid
+
+    def verify(self, password: str):
+        if not pbkdf2_sha256.verify(password, self.password):
+            raise IncorrectCredentials()
+        
 
 class User(BaseModel):
     id: Optional[UUID] = None
@@ -36,10 +52,26 @@ class User(BaseModel):
 
 
 class UserWithCredentials(User):
+    """
+    Representa un usuario y sus credenciales.
+    En DDD sería el root agregate
+    """
     credentials: list[Credentials] = []
 
     class Config:
         orm_mode = True
+
+    def _find_valid_credential(self) -> Credentials:
+        for credential in self.credentials:
+            if credential.is_valid():
+                return credential
+        raise CredentialsNotFound()
+
+    def verify_password(self, password: str):
+        credentials = self._find_valid_credential()
+        credentials.verify(password)
+
+
 
 
 # class UsersManager:

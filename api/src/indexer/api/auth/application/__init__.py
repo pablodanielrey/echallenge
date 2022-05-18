@@ -10,9 +10,11 @@ class UseCase(Protocol):
 from .add_admin import AddAdmin
 from .get_users import GetUsers
 from .create_user import CreateUser
+from .login import Login
 
 __all__ = [
     'AddAdmin',
     'GetUsers',
-    'CreateUser'
+    'CreateUser',
+    'Login'
 ]

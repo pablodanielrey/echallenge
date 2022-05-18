@@ -2,7 +2,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from indexer.api.app import app
-from indexer.api.jwt import settings, models
+from indexer.api.jwt import services, settings
 
 
 @pytest.fixture
@@ -13,7 +13,7 @@ def client():
 @pytest.fixture(scope="session")
 def jwt_manager():
     jsettings = settings.JWTSettings()
-    return models.JWTManager(jsettings.jwt_key,
+    return services.JWTManager(jsettings.jwt_key,
                              jsettings.jwt_algo,
                              jsettings.jwt_audience,
                              jsettings.jwt_issuer,

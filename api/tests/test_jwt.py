@@ -1,13 +1,13 @@
 import pytest
 import time
 
-from indexer.api.jwt import settings, exceptions, models
+from indexer.api.jwt import services, settings, exceptions
 
 
 @pytest.fixture(scope="session")
 def jwt_manager():
     jsettings = settings.JWTSettings()
-    return models.JWTManager(jsettings.jwt_key,
+    return services.JWTManager(jsettings.jwt_key,
                              jsettings.jwt_algo,
                              jsettings.jwt_audience,
                              jsettings.jwt_issuer,
@@ -17,7 +17,7 @@ def jwt_manager():
 @pytest.fixture(scope="session")
 def another_jwt_manager():
     jsettings = settings.JWTSettings()
-    return models.JWTManager(jsettings.jwt_key,
+    return services.JWTManager(jsettings.jwt_key,
                              jsettings.jwt_algo,
                              jsettings.jwt_audience,
                              f"{jsettings.jwt_issuer}2",
@@ -27,7 +27,7 @@ def another_jwt_manager():
 @pytest.fixture(scope="session")
 def expired_jwt_manager():
     jsettings = settings.JWTSettings()
-    return models.JWTManager(jsettings.jwt_key,
+    return services.JWTManager(jsettings.jwt_key,
                              jsettings.jwt_algo,
                              jsettings.jwt_audience,
                              jsettings.jwt_issuer,

@@ -591,3 +591,107 @@ intento levantar el docker-compose a ver como se comporta y ya estaría para ent
 voy implementar dbb usando behave para tener tests de contrato.
 instalo behave y testeo a ver si un test básico corre.
 
+---
+
+viendo lo de bdd lo mejor es ir por gherkin y behave dentro de lo que es python.
+en vez de test unitarios lo mas importante son tests de aceptación y contrato para la api.
+esto permite refactorizar sin tener que estar cambiando constantemente los tests unitarios.
+
+solo los tests unitarios son importantes para aspectos complejos del sistema.
+pero si no dar prioridad a los tests de aceptación.
+
+---
+
+a la par de estar haciendo el test me gustó el tema de arquitectura hexagonal (una de las arquitecturas limpias). 
+y refactorizo para entener un poco mejor el caso simple de autenticación.
+
+---
+
+dudas principales hasta ahora:
+1 - donde va la lógica de chequeo de clave por ejemplo (capa app, capa dominio?). todo indica que va en dominio, y dentro de entidades. 
+
+
+2 - los finds del patrón repositorio, usarían el patron criteria para filtrar los resultados. no tengo claro todavía como mapearlo a filtros sqlalchemy en este caso.
+tengo que hacer mas pruebas sobre esto para ver como me gusta.
+por ahora en la capa del repo dejo un método específico para el criterio de filtrado (NO ESTA BIEN!!!. es solo para verificar que funciona)
+o sea implementado un HORRIBLE:
+
+class Repo:
+
+    def find_by_username(self, username: str) -> UserWithCredentials:
+
+
+
+3 - tambien esta medio confuso el tema de la unidad de trabajo. la transacción se maneja a nivel de capa de aplicación. pero el ddd nos indica que 
+la unidad de trabajo esta dada por los agregates. que serían en este caso capa de modelo.
+o sea :
+
+infraestructura --> aplicación --> agregate --> repo.save()
+
+la transacción NO se exporta a la capa de app. así nos desacoplamos de que tipo de transacciones son y de la base de datos.
+mmmmmm. lo que significa que 
+
+with ....session() as session:
+     bla bla bla
+     bla bla bla
+     session.commit()
+
+NO va en capa aplicación, si no mas bien en capa de dominio esta representado por un agregate y en capa de infraestructura se usa el patrón dentro del save()
+verificar y hacer pruebas.
+
+---
+
+
+me doy cuenta que jwt ya no es un módulo si no es parte de seguridad de infraestrucutra de los endpoints.
+por lo que lo modelo al manajer como una lib.
+y meto el código relacionado con el procesamieto del jwt dentor de la capa de infraestructura.
+
+
+--
+
+
+me tengo que acordar de cambiar los nombres para que quede coherente como funciona todo.
+por ejemplo lo que tenía dentro de "models" --> "services"
+modes = entidades en ddd
+
+--
+
+las settgins ahora las manejo como infraestrcutura, asi que lo de jwt va a parar a
+la capa de fastapi de infraestructura de auth. quedan dentro de las settings del sistema principal.
+
+---
+
+corrijo los imports para especificar claramente cuando son imports entre capas.
+podría separar cada capa en un pakcage distinto.
+asi que esos imports no quedan relativos, si no que quedan absolutos. (por mas que podrían especificarse como relativos en este caso)
+
+
+----
+
+
+volviendo a las dudas que me quedaron. no me gusta que la transacción sea en capa de infraestructura pero a nivel de repo.
+ej:
+
+
+class AddAdmin(UseCase):
+    ....
+    .....
+
+    uid = self.repo.add(user=user)
+    ruser = self.repo.find(uid)
+    return ruser
+
+si quiero hacer cosas como esas no tengo la transacción en capa de aplicación (casos de uso)
+por lo que tengo que modelarlo como agregate, o en este caso tirar la responsabiliad de retornar el usuario completo al repositorio.
+NO ME GUSTA. voy a leer mas cual sería la modelización correcta.
+
+el caso de uso tiene que ser el que maneja las transacciones. o sea que es necesario modelar una "transacción" agnóstica de la estrucutra de repositorio a usar?
+
+
+----
+
+bueno termine de refactorizar a arquitectura hexagonal.
+falta verificar codigo pero lo grande creo que esta.
+pruebo la api y me esta funcionando.
+ahora a desechar los tests de unidad y probar lo que quería probar desde un principio que son test de aceptación/contrato de la api.
+usando gerkin.

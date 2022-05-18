@@ -4,7 +4,7 @@ from sse_starlette.sse import EventSourceResponse
 
 from indexer.vehicles.models import VehiclesManager
 
-from ..jwt.deps import get_jwt_token
+from indexer.api.auth.infraestructure.fastapi.deps import get_jwt_token
 
 from . import models, deps, schemas
 
